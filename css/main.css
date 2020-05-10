@@ -1,0 +1,30 @@
+body {
+  font-family: Helvetica;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+a:link {
+  text-decoration: none;
+  color: #0077cc;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #667799;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
+}
