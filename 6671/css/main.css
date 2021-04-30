@@ -1,0 +1,40 @@
+.title {
+  font-size: 30px;
+  color: #666666;
+}
+
+.info {
+  margin-top: 20px;
+  color: #888888;
+}
+
+.info_caption {
+  line-height: 1.4;
+  padding-right: 10px;
+  color: #333333;
+}
+
+.weeks {
+  margin-top: 20px;
+}
+
+.week {
+  display: inline-block;
+  vertical-align: top;
+  min-width: 180px;
+  margin-right: 20px;
+}
+
+.week_label {
+  display: block;
+  font-size: 26px;
+  color: #666666;
+  border-bottom: 2px solid #666666;
+}
+
+ul {
+  display: inline-block;
+  list-style-type: square;
+  margin-top: 5px;
+  padding-left: 20px;
+}

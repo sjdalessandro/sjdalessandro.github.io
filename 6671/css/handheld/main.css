@@ -1,0 +1,19 @@
+.title {
+  font-size: 48px;
+}
+
+.week {
+  min-width: 340px;
+}
+
+.week_label {
+  font-size: 48px;
+}
+
+ul {
+  margin-left: 20px;
+}
+
+li {
+  margin: 10px 0 10px 0;
+}
