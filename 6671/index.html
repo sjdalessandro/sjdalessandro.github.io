@@ -28,6 +28,54 @@
     </div>
     <div class="weeks">
       <div class="week">
+        <span class="week_label">Semana 4</span>
+        <div>
+          <ul class="rss">
+          	<!--
+            <li>
+              <a href="demoGrillaNxM/index.html">Grilla NxM</a>
+            </li>
+            -->
+            <li>
+        	  <a href="javascript:{}" onclick="document.getElementById('form4').submit();return false;">Grilla NxM</a>
+            </li>
+              <form action="demoGrillaNxM/index.html" id="form4">
+	          	<input type="radio" id="input_oculto" value="oculto" checked>
+				<label for="oculto" id="label_oculto">
+					<label for="filas">Filas</label>
+					<input type="number" id="filas" name="filas" min="1" value="40"><br>
+					<label for="columnas">Columnas</label>
+					<input type="number" id="columnas" name="columnas" min="1" value="40"><br>
+				</label><br>
+	          	<input type="radio" id="plano" name="forma" value="plano" checked>
+				<label for="plano" id="label_plano">Plano<br>
+					<label for="ancho">Ancho</label>
+					<input type="number" id="ancho" name="ancho" min="0.1" value="3.0" step="0.1"><br>
+					<label for="alto">Alto</label>
+					<input type="number" id="alto" name="alto" min="0.1" value="3.0" step="0.1"><br>
+				</label><br>
+              	<input type="radio" id="esfera" name="forma" value="esfera">
+				<label for="esfera">Esfera<br>
+					<label for="radio">Radio</label>
+					<input type="number" id="radio" name="radio" min="0.1" value="1.5" step="0.1"><br>
+				</label><br>
+              	<input type="radio" id="tubo" name="forma" value="tubo">
+				<label for="tubo">TuboSenoidal<br>
+					<label for="amplitud">Amplitud</label>
+					<input type="number" id="amplitud" name="amplitud" min="0.1" value="0.1" step="0.1"><br>
+					<label for="longitud">Longitud</label>
+					<input type="number" id="longitud" name="longitud" min="0.1" value="0.4" step="0.1"><br>
+					<label for="alto">Alto</label>
+					<input type="number" id="alto" name="alto_tubo" min="0.1" value="2.0" step="0.1"><br>
+					<label for="radio_tubo">Radio</label>
+					<input type="number" id="radio_tubo" name="radio_tubo" min="0.1" value="0.7" step="0.1"><br>
+				</label><br>
+				<button type="submit" value="default action"/>
+			  </form>	
+          </ul>
+        </div>
+      </div>
+      <div class="week">
         <span class="week_label">Semana 3</span>
         <div>
           <ul class="rss">

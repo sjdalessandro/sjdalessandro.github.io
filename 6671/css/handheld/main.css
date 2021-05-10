@@ -17,3 +17,14 @@ ul {
 li {
   margin: 10px 0 10px 0;
 }
+
+label {
+  width: 320px;
+  margin-bottom: 0;
+}
+
+form > label {
+  margin-bottom: 10px;
+}
+
+

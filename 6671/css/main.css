@@ -38,3 +38,39 @@ ul {
   margin-top: 5px;
   padding-left: 20px;
 }
+
+form > button {
+  visibility: hidden;
+}
+
+form > label {
+  margin-bottom: 5px;
+}
+
+label {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 0.2em;
+  width: 150px;
+}
+
+label label {
+  width: 60%;
+  pointer-events: none;
+}
+
+#input_oculto {
+  visibility: hidden;
+}
+
+input[type=number] {
+  font-size: inherit;
+  width: 30%;
+  vertical-align: bottom;
+  margin-bottom: 0.2em;
+}
+
+input {
+  vertical-align: top;
+}
+
