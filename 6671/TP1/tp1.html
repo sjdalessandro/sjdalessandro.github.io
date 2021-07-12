@@ -4,14 +4,18 @@
         <link rel="shortcut icon" href="#">
         <title></title>        
         <style>
-            body{ background-color: grey; }
-            canvas{ background-color: white; }
+            body{
+                background-color: grey;
+            }
+            canvas{
+                background-color: white;
+            }
         </style>
     </head>
     <body>
 
     	<center>    		            
-            <canvas id="my-canvas" width="700" height="465">
+            <canvas id="my-canvas">
             	Your browser does not support the HTML5 canvas element.
     		</canvas>    		
     	</center>
@@ -19,6 +23,8 @@
         
         <script type="text/javascript" src="js/webgl-utils.js"></script>
         <script type="text/javascript" src="js/gl-matrix.js"></script>
+        <script type="text/javascript" src="js/dat.gui.min.js"></script>
+
         <script type="text/javascript" src="js/cabezal.js"></script>
         <script type="text/javascript" src="js/extrusor.js"></script>
         <script type="text/javascript" src="js/trayectoria.js"></script>
@@ -132,7 +138,45 @@
             const camaraOrbital = 1;
             const camaraGrua = 2;
             var camara = camaraOrbital;
-            
+
+            var menu = new function() {
+                this.pisosTramo1 = 6;
+                this.pisosTramo2 = 3;
+                this.columnas = 10;
+                this.ventanasLargo = 8;
+                this.ventanasAncho = 6;
+
+                this.prevPisosTramo1 = this.pisosTramo1;
+                this.prevPisosTramo2 = this.pisosTramo2;
+                this.prevColumnas = this.columnas;
+                this.prevVentanasLargo = this.ventanasLargo;
+                this.prevVentanasAncho = this.ventanasAncho;
+
+                this.cambiaronLosParametros = () => {
+                    return this.prevPisosTramo1 != this.pisosTramo1 ||
+                           this.prevPisosTramo2 != this.pisosTramo2 ||
+                           this.prevColumnas != this.columnas ||
+                           this.prevVentanasLargo != this.ventanasLargo ||
+                           this.prevVentanasAncho != this.ventanasAncho;
+                }
+                this.onMenuClick = () => {
+                    if (this.cambiaronLosParametros()) {
+                        edificio.reset(
+                            this.ventanasLargo,
+                            this.ventanasAncho,
+                            this.pisosTramo1,
+                            this.pisosTramo2,
+                            this.columnas
+                        );
+                    }
+                    this.prevPisosTramo1 = this.pisosTramo1;
+                    this.prevPisosTramo2 = this.pisosTramo2;
+                    this.prevColumnas = this.columnas;
+                    this.prevVentanasLargo = this.ventanasLargo;
+                    this.prevVentanasAncho = this.ventanasAncho;
+                }
+            }
+
             function initWebGL(){
 
                 canvas = document.getElementById("my-canvas");  
@@ -158,11 +202,23 @@
                     window.addEventListener("mousemove", event => {
                         this.mousemoveEvent(event);
                     }, false);
+                    window.addEventListener("resize", event => {
+                        this.resizeEvent(event);
+                    }, false);
 
                     const ladoTierra = 10000;
 
+                    initMenu();
+
                     grua = new Grua([-16, 0.0, 0]);
-                    edificio = new Edificio([6, 0.0, 0]);
+                    edificio = new Edificio(
+                        [6, 0.0, 0],
+                        menu.ventanasLargo,
+                        menu.ventanasAncho,
+                        menu.pisosTramo1,
+                        menu.pisosTramo2,
+                        menu.columnas
+                    );
                     tierra = new Cuboide(ladoTierra, ladoTierra, 1, true);
 
                     let modelMatrixTierra = mat4.create();
@@ -170,6 +226,7 @@
                     mat4.translate(modelMatrixTierra, modelMatrixTierra, [0, -1.0, 0]);
                     tierra.setModelMatrix(modelMatrixTierra);
 
+                    resizeEvent();
                     setupWebGL();
                     initShaders();
                     tick();   
@@ -195,6 +252,25 @@
                 mat4.identity(normalMatrix);
 
                 vista();
+            }
+
+            function resizeEvent(event) {
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+                let wf = width/16;
+                let hf = height/9;
+                if (wf > hf ) {
+                    height *= 0.95;
+                    width = 16*height/9;
+                } else {
+                    width *= 0.95;
+                    height = 9*width/16;
+                }
+                width = Math.round(width);
+                height = Math.round(height);
+                canvas.width = width;
+                canvas.height = height;
+                setupWebGL();
             }
 
             function mousedownEvent(event) {
@@ -365,6 +441,16 @@
 
                 requestAnimationFrame(tick);
                 drawScene();
+            }
+
+            function initMenu(){
+                var gui = new dat.GUI();
+                gui.add(menu, "pisosTramo1", 1).step(1).name("Pisos 1° tramo");
+                gui.add(menu, "pisosTramo2", 1).step(1).name("Pisos 2° tramo");
+                gui.add(menu, "columnas", 4).step(1).name("Columnas");
+                gui.add(menu, "ventanasLargo", 4).step(1).name("Ventanas largo");
+                gui.add(menu, "ventanasAncho", 4).step(1).name("Ventanas ancho");
+                gui.add(menu, 'onMenuClick').name("Actualizar");
             }
 
             window.onload=initWebGL;

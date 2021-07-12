@@ -1,9 +1,9 @@
 class Piso {
-    constructor(posicion, verticesLosa, ventanasAncho, ventanasLargo, chico) {
+    constructor(posicion, verticesLosa, ventanasAncho, ventanasLargo, chico, columnasLen) {
         this.posicion = posicion;
         this.ventanasAncho = ventanasAncho;
         this.ventanasLargo = ventanasLargo;
-        this.columnasLen = 11;
+        this.columnasLen = columnasLen;
         this.modificada = true;
 
         this.chico = chico;

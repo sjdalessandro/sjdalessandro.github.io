@@ -1,23 +1,34 @@
 class Edificio {
-    constructor(posicion) {
+    constructor(posicion, ventanasLargo, ventanasAncho, pisosGrandes, pisosChicos, columnasLen) {
         this.posicion = posicion;
-        this.ventanasLargo = 8;
-        this.ventanasAncho = 6;
-        this.pisosGrandes = 6;
-        this.pisosChicos = 3;
-        this.pisosTotales = this.pisosGrandes + this.pisosChicos;
-        this.modificada = true;
 
         this.ventanaLado = 2.0;
         this.ventanaEspesor = 0.05;
-        this.ancho = this.ventanasAncho * this.ventanaLado;
-        this.largo = this.ventanasLargo * this.ventanaLado;
         this.colorVentana = [0, 0.3, 0.8];
 
         this.alturaLosa = 0.3;
         this.alturaBase = 3;
         this.colorBase = [0.15, 0.15, 0.15];
         this.colorBase = [0.4, 0.25, 0.25];
+
+        this.reset(ventanasLargo, ventanasAncho, pisosGrandes, pisosChicos, columnasLen);
+
+        window.addEventListener("keydown", event => {
+            this.keyEvent(event);
+        }, false);
+    }
+
+    reset(ventanasLargo, ventanasAncho, pisosGrandes, pisosChicos, columnasLen) {
+        this.ventanasLargo = ventanasLargo;
+        this.ventanasAncho = ventanasAncho;
+        this.pisosGrandes = pisosGrandes;
+        this.pisosChicos = pisosChicos;
+        this.columnasLen = columnasLen;
+        this.pisosTotales = this.pisosGrandes + this.pisosChicos;
+        this.modificada = true;
+
+        this.ancho = this.ventanasAncho * this.ventanaLado;
+        this.largo = this.ventanasLargo * this.ventanaLado;
 
         this.verticesLosa = this.getVerticesLosa();
 
@@ -34,10 +45,6 @@ class Edificio {
         this.pisosChicos = this.crearPisosChicos();
 
         this.actualizar();
-
-        window.addEventListener("keydown", event => {
-            this.keyEvent(event);
-        }, false);
     }
 
     getVerticesLosa() {
@@ -88,7 +95,9 @@ class Edificio {
                 [0, 0, 0],
                 this.verticesLosa,
                 this.ventanasAncho,
-                this.ventanasLargo
+                this.ventanasLargo,
+                false,
+                this.columnasLen
             ));
         }
         return pisos;
@@ -103,7 +112,8 @@ class Edificio {
                 vertices,
                 this.ventanasAncho,
                 this.ventanasLargo,
-                true
+                true,
+                this.columnasLen
             ));
         }
         return pisos;
