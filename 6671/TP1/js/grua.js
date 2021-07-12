@@ -4,7 +4,8 @@ class Grua {
         this.posicionCamaraCabina = undefined;
         this.anguloCamaraCabina = 0;
         this.alturaSegmentoColumna = 4;
-        this.elevacionSegmentoColumna = 1;
+        this.elevacionSegmentoColumna1 = this.alturaSegmentoColumna;
+        this.elevacionSegmentoColumna2 = 1;
         this.modificada = true;
         this.largoEje = 1.5;
         this.largoBrazo = 24;
@@ -79,23 +80,27 @@ class Grua {
         this.extrusorCuboA.setModelMatrix(modelMatrixA);
 
         let modelMatrixB = mat4.create();
-        mat4.translate(modelMatrixB, modelMatrixA, [0, this.alturaSegmentoColumna, 0]);
+        mat4.translate(modelMatrixB, modelMatrixA, [0, this.elevacionSegmentoColumna1, 0]);
         this.extrusorCuboB.setModelMatrix(modelMatrixB);
 
         let modelMatrixC = mat4.create();
         mat4.translate(modelMatrixC, modelMatrixB, [0, this.alturaSegmentoColumna, 0]);
-        mat4.scale(modelMatrixC, modelMatrixC, [1, this.elevacionSegmentoColumna, 1]);
+        mat4.scale(modelMatrixC, modelMatrixC, [1, this.elevacionSegmentoColumna2, 1]);
         this.extrusorCuboC.setModelMatrix(modelMatrixC);
 
         let modelMatrixCabina = mat4.create();
-        mat4.translate(modelMatrixCabina, modelMatrixC, [0, this.alturaSegmentoColumna, 0]);
-        mat4.scale(modelMatrixCabina, modelMatrixCabina, [1, 1/this.elevacionSegmentoColumna, 1]);
+        if (this.elevacionSegmentoColumna2 != 0) {
+            mat4.translate(modelMatrixCabina, modelMatrixC, [0, this.alturaSegmentoColumna, 0]);
+            mat4.scale(modelMatrixCabina, modelMatrixCabina, [1, 1/this.elevacionSegmentoColumna2, 1]);
+        } else {
+            mat4.translate(modelMatrixCabina, modelMatrixB, [0, this.alturaSegmentoColumna, 0]);
+        }
         mat4.rotate(modelMatrixCabina, modelMatrixCabina, this.anguloCabina, [0, 1, 0]);
         modelMatrixCabina = this.cabina.actualizar(modelMatrixCabina);
 
         this.posicionCamaraCabina = [
             -this.posicion[0],
-            -this.posicion[1] - 2*this.alturaSegmentoColumna - this.elevacionSegmentoColumna*this.alturaSegmentoColumna - this.cabina.altura/2,
+            -this.posicion[1] - this.alturaSegmentoColumna - this.elevacionSegmentoColumna1 - this.elevacionSegmentoColumna2*this.alturaSegmentoColumna - this.cabina.altura/2,
             -this.posicion[2]
         ];
 
@@ -180,14 +185,35 @@ class Grua {
         let key = event.keyCode || event.which;
         let keychar = String.fromCharCode(key);
         if (keychar == "Q") {
-            if (this.elevacionSegmentoColumna < 10) {
-                this.elevacionSegmentoColumna += 0.05;
+            if (this.elevacionSegmentoColumna1 < this.alturaSegmentoColumna) {
+                this.elevacionSegmentoColumna1 += 0.15;
                 this.modificada = true;
+            } else {
+                if (this.elevacionSegmentoColumna1 != this.alturaSegmentoColumna) {
+                    this.elevacionSegmentoColumna1 = this.alturaSegmentoColumna;
+                    this.modificada = true;
+                }
+                if (this.elevacionSegmentoColumna2 < 10) {
+                    this.elevacionSegmentoColumna2 += 0.05;
+                    this.modificada = true;
+                }
             }
         } else if (keychar == "A") {
-            if (this.elevacionSegmentoColumna > 0) {
-                this.elevacionSegmentoColumna -= 0.05;
+            if (this.elevacionSegmentoColumna2 > 0) {
+                this.elevacionSegmentoColumna2 -= 0.05;
                 this.modificada = true;
+            } else {
+                if (this.elevacionSegmentoColumna2 != 0) {
+                    this.elevacionSegmentoColumna2 = 0;
+                    this.modificada = true;
+                }
+                if (this.elevacionSegmentoColumna1 > 0) {
+                    this.elevacionSegmentoColumna1 -= 0.15;
+                    this.modificada = true;
+                } else if (this.elevacionSegmentoColumna1 != 0) {
+                    this.elevacionSegmentoColumna1 = 0;
+                    this.modificada = true;
+                }
             }
         }
         if (keychar == "W") {
