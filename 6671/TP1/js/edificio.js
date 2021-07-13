@@ -187,7 +187,7 @@ class Edificio {
         });
         this.base.draw(setupVertexShaderMatrix, drawMalla, this.colorBase);
     }
-    
+ 
     keyEvent(event) {
         let key = event.keyCode || event.which;
         let keychar = String.fromCharCode(key);

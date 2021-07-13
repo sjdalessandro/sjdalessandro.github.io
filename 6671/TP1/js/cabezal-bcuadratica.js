@@ -63,7 +63,7 @@ class CabezalBCuadratica extends Cabezal {
         let der = this.derivada(u - t*deltaU, pctrl);
         let normal = this.pcruz([0, 1, 0], [der[0], 0, der[1]]);
         return this.normalize(normal);
-}
+    }
 
     curva(u, puntosDeControl) {
 		var p0 = puntosDeControl[0];

@@ -107,6 +107,23 @@ class Cuboide {
         uvBuffer.push(1, 1);
 
         // Tapa inferior
+        positionBuffer.push(mitadA, 0, -mitadB);
+        normalBuffer.push(0, -1, 0);
+        uvBuffer.push(1, 1);
+
+        positionBuffer.push(-mitadA, 0, -mitadB);
+        normalBuffer.push(0, -1, 0);
+        uvBuffer.push(1, 1);
+
+        positionBuffer.push(mitadA, 0, mitadB);
+        normalBuffer.push(0, -1, 0);
+        uvBuffer.push(1, 1);
+
+        positionBuffer.push(-mitadA, 0, mitadB);
+        normalBuffer.push(0, -1, 0);
+        uvBuffer.push(1, 1);
+
+        /*
         positionBuffer.push(mitadA, this.ladoC, mitadB);
         normalBuffer.push(0, -1, 0);
         uvBuffer.push(1, 1);
@@ -130,6 +147,7 @@ class Cuboide {
         positionBuffer.push(-mitadA, 0, -mitadB);
         normalBuffer.push(0, -1, 0);
         uvBuffer.push(1, 1);
+        */
 
         // Buffer de indices de los triángulos
             
@@ -138,7 +156,8 @@ class Cuboide {
         indexBuffer.push(8, 9, 10, 11);
         indexBuffer.push(12, 13, 14, 15);
         indexBuffer.push(16, 17, 18, 19);
-        indexBuffer.push(20, 21, 22, 23, 24, 25, 26);
+        //indexBuffer.push(20, 21, 22, 23, 24, 25, 26);
+        indexBuffer.push(20, 21, 22, 23);
 
         // Creación e Inicialización de los buffers
     
