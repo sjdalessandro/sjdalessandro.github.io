@@ -347,14 +347,13 @@
                 // Orbital
                 mat4.identity(viewMatrix);
                 mat4.translate(viewMatrix,viewMatrix, [0.0, -10.0, -radioCamara]);
-                let  anguloA = phi;
-                if (anguloA > 90) {
-                    anguloA = 90;
+                if (phi > 90) {
+                    phi = 90;
                 }
-                if (anguloA < 0) {
-                    anguloA = 0;
+                if (phi < 0) {
+                    phi = 0;
                 }
-                mat4.rotate(viewMatrix,viewMatrix, (anguloA/90)*Math.PI/2, [1.0, 0.0, 0.0]);
+                mat4.rotate(viewMatrix,viewMatrix, (phi/90)*Math.PI/2, [1.0, 0.0, 0.0]);
                 mat4.rotate(viewMatrix,viewMatrix, (theta/360)*2*Math.PI, [0.0, 1.0, 0.0]);
             }
 
