@@ -36,6 +36,7 @@
         <script type="text/javascript" src="js/cabezal-bcubica.js"></script>
         <script type="text/javascript" src="js/cabezal-cilindro.js"></script>
         <script type="text/javascript" src="js/cabezal-base-edificio.js"></script>
+        <script type="text/javascript" src="js/cabezal-semiarco.js"></script>
         <script type="text/javascript" src="js/cuboide.js"></script>
         <script type="text/javascript" src="js/edificio.js"></script>
         <script type="text/javascript" src="js/piso.js"></script>
@@ -360,10 +361,8 @@
             function vistaGrua() {
                 mat4.identity(viewMatrix);
                 let pos = grua.posicionCamaraCabina;
-                //pos[2] += -40.0;
                 let ang = grua.anguloCamaraCabina;
                 mat4.rotate(viewMatrix, viewMatrix, ang, [0.0, 1.0, 0.0]);
-                //console.log(pos[1]);
                 mat4.translate(viewMatrix, viewMatrix, [pos[0], pos[1], pos[2]]);
             }
 

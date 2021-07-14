@@ -26,7 +26,7 @@ class Tobogan {
     }
 
     crearSemiarcos(cantidad, diametro) {
-        let cabezalSemiarco = new CabezalCilindro(diametro);
+        let cabezalSemiarco = new CabezalSemiarco(diametro, diametro/2, diametro/10);
         let trayectoriaSemiarco = new TrayectoriaTobogan(1);
         let semiarcos = [];
         for (let i = 0; i < cantidad; i++) {
