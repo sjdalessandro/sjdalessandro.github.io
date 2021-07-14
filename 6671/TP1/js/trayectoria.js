@@ -9,7 +9,7 @@ class Trayectoria {
 
     getIndiceMatriz(v) {
         let l = this.getMatricesLength();
-        return v*(l - 1);
+        return Math.round(v*(l - 1));
      }
 
     getPosicion(pos2D, v) {

@@ -28,6 +28,8 @@
         <script type="text/javascript" src="js/extrusor.js"></script>
         <script type="text/javascript" src="js/trayectoria.js"></script>
         <script type="text/javascript" src="js/trayectoria-recta.js"></script>
+        <script type="text/javascript" src="js/trayectoria-bcuadratica.js"></script>
+        <script type="text/javascript" src="js/trayectoria-tobogan.js"></script>
         <script type="text/javascript" src="js/grua.js"></script>
         <script type="text/javascript" src="js/cabina.js"></script>
         <script type="text/javascript" src="js/cabezal-bcuadratica.js"></script>
@@ -37,6 +39,7 @@
         <script type="text/javascript" src="js/cuboide.js"></script>
         <script type="text/javascript" src="js/edificio.js"></script>
         <script type="text/javascript" src="js/piso.js"></script>
+        <script type="text/javascript" src="js/tobogan.js"></script>
         
         <script id="shader-vs" type="x-shader/x-vertex">
 
@@ -124,6 +127,7 @@
             var grua = null;
             var edificio = null;
             var tierra = null;
+            var tobogan = null;
 
             var colorTierra = [0.0, 0.5, 0.2];
             var colorCielo = [0.0, 0.2, 0.6];
@@ -145,22 +149,29 @@
                 this.columnas = 10;
                 this.ventanasLargo = 8;
                 this.ventanasAncho = 6;
+                this.nivelesTobogan = this.pisosTramo1;
 
                 this.prevPisosTramo1 = this.pisosTramo1;
                 this.prevPisosTramo2 = this.pisosTramo2;
                 this.prevColumnas = this.columnas;
                 this.prevVentanasLargo = this.ventanasLargo;
                 this.prevVentanasAncho = this.ventanasAncho;
+                this.prevNivelesTobogan = this.nivelesTobogan;
 
-                this.cambiaronLosParametros = () => {
+                this.cambiaronLosParametrosEdificio = () => {
                     return this.prevPisosTramo1 != this.pisosTramo1 ||
                            this.prevPisosTramo2 != this.pisosTramo2 ||
                            this.prevColumnas != this.columnas ||
                            this.prevVentanasLargo != this.ventanasLargo ||
                            this.prevVentanasAncho != this.ventanasAncho;
                 }
+                this.cambiaronLosParametrosTobogan = () => {
+                    return this.prevNivelesTobogan != this.nivelesTobogan;
+                }
                 this.onMenuClick = () => {
-                    if (this.cambiaronLosParametros()) {
+                    let cambioEdificio = this.cambiaronLosParametrosEdificio();
+                    let cambioTobogan = this.cambiaronLosParametrosTobogan();
+                    if (cambioEdificio) {
                         edificio.reset(
                             this.ventanasLargo,
                             this.ventanasAncho,
@@ -173,6 +184,10 @@
                         this.prevColumnas = this.columnas;
                         this.prevVentanasLargo = this.ventanasLargo;
                         this.prevVentanasAncho = this.ventanasAncho;
+                    }
+                    if (cambioTobogan || cambioEdificio) {
+                        tobogan.reset(this.nivelesTobogan);
+                        this.prevNivelesTobogan = this.nivelesTobogan;
                     }
                 }
             }
@@ -220,6 +235,8 @@
                         menu.columnas
                     );
                     tierra = new Cuboide(ladoTierra, ladoTierra, 1, true);
+                    let diametroTobogan = 0.8;
+                    tobogan = new Tobogan(edificio, diametroTobogan, 6);
 
                     let modelMatrixTierra = mat4.create();
                     mat4.identity(modelMatrixTierra);
@@ -439,6 +456,7 @@
                 tierra.draw(setupVertexShaderMatrix, drawMalla, colorTierra);
                 grua.draw(setupVertexShaderMatrix, drawMalla, vista);
                 edificio.draw(setupVertexShaderMatrix, drawMalla);
+                tobogan.draw(setupVertexShaderMatrix, drawMalla);
             }
 
             function tick(){
@@ -454,6 +472,7 @@
                 gui.add(menu, "columnas", 4).step(1).name("Columnas");
                 gui.add(menu, "ventanasLargo", 4).step(1).name("Ventanas largo");
                 gui.add(menu, "ventanasAncho", 4).step(1).name("Ventanas ancho");
+                gui.add(menu, "nivelesTobogan", 0).step(1).name("Niveles tobogán");
                 gui.add(menu, 'onMenuClick').name("Actualizar");
             }
 

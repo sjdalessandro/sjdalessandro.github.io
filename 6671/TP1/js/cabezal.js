@@ -35,8 +35,12 @@ class Cabezal {
         return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]];
     }
 
+    magnitude(v) {
+        return (v[0]**2 + v[1]**2 + v[2]**2)**0.5;
+    }
+
     normalize(v) {
-        let magnitude = (v[0]**2 + v[1]**2 + v[2]**2)**0.5;
+        let magnitude = this.magnitude(v);
         return [v[0]/magnitude, v[1]/magnitude, v[2]/magnitude];
     }
 }

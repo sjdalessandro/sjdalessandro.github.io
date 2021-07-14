@@ -6,8 +6,10 @@ class Edificio {
         this.ventanaEspesor = 0.05;
         this.colorVentana = [0, 0.3, 0.8];
 
+        this.toboganZ = 0;
+
         this.alturaLosa = 0.3;
-        this.alturaBase = 3;
+        this.alturaBase = this.ventanaLado;
         this.colorBase = [0.15, 0.15, 0.15];
         this.colorBase = [0.4, 0.25, 0.25];
 
@@ -47,6 +49,10 @@ class Edificio {
         this.actualizar();
     }
 
+    getToboganZ() {
+        return this.toboganZ + 1.5;
+    }
+
     getVerticesLosa() {
         const stepY = this.largo/5;
         const stepX = this.ancho/3;
@@ -75,10 +81,14 @@ class Edificio {
     }
 
     desplazar(vertices, min, max) {
+        this.toboganZ = 0;
         for (let i = 0; i < vertices.length; i++) {
             let v = vertices[i];
             v[0] += Math.random()*(max - min) + min;
             v[1] += Math.random()*(max - min) + min;
+            if (this.toboganZ < v[1]) {
+                this.toboganZ = v[1];
+            }
         }
     }
 
