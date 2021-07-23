@@ -1,17 +1,11 @@
-class CabezalBCuadratica extends Cabezal {
+class CabezalCuadratica extends Cabezal {
+
     constructor(puntosDeControl, abierta) {
         console.assert(puntosDeControl.length >= 3, "Al menos se requieren 3 puntos de control.");
         super();
+        this.initialize();
 
         this.step = 0.05;
-        
-        this.base0 = function(u) { return 0.5*(1-u)*(1-u); }
-        this.base1 = function(u) { return 0.5+u*(1-u); }
-        this.base2 = function(u) { return 0.5*u*u; }
-
-        this.base0der = function(u) { return -1+u; }
-        this.base1der = function(u) { return  1-2*u; } 
-        this.base2der = function(u) { return  u; }
 
         // Cierro la curva
         if (!abierta) {
@@ -24,7 +18,7 @@ class CabezalBCuadratica extends Cabezal {
         this.vertices = [];
         this.tangentes = [];
         this.normales = [];
-		for (var t=0; t < this.tramos; t++){
+		for (var t=0; t < this.tramos; t += this.stepTramo){
             let pctrl = [puntosDeControl[t], puntosDeControl[t+1], puntosDeControl[t+2]];
 
             let verticesTramo = this.getVertices(pctrl);

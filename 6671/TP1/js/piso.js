@@ -78,7 +78,7 @@ class Piso {
     }
 
     crearLosa(verticesLosa, chico) {
-        let cabezalLosa = new CabezalBCuadratica(verticesLosa);
+        let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
         return new Extrusor(cabezalLosa, trayectoriaLosa, true);
     }

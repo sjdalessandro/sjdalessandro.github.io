@@ -22,7 +22,7 @@ class CabezalBaseEdificio extends Cabezal {
                          [1, 0, 0],
                          [0, 0, -1]];
 
-                         let v = [this.vertices[0]];
+        let v = [this.vertices[0]];
         for (let i = 1; i < this.vertices.length; i++) {
             v.push(this.vertices[i]);
             v.push(this.vertices[i]);

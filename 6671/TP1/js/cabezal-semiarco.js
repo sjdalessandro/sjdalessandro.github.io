@@ -1,4 +1,4 @@
-class CabezalSemiarco extends CabezalBCuadratica {
+class CabezalSemiarco extends CabezalBezierCuadratica {
     constructor(diametro, altura, espesor) {
         const d = 1.0925*diametro/2;
         const e = espesor;

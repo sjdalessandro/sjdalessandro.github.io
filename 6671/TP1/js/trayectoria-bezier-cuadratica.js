@@ -1,15 +1,15 @@
-class TrayectoriaBCuadratica extends Trayectoria {
+class TrayectoriaBezierCuadratica extends Trayectoria {
     constructor(puntosDeControl) {
         super();
-        this.cabezalBCuadratica = new CabezalBCuadratica(puntosDeControl, true);
+        this.cabezalBezierCuadratica = new CabezalBezierCuadratica(puntosDeControl, true);
         this.matrices = [];
         let y = 0.4;
-        this.cabezalBCuadratica.vertices.forEach((v, i) => {
-            let normal = this.cabezalBCuadratica.normales[i];
-            let tangente = this.cabezalBCuadratica.tangentes[i];
+        this.cabezalBezierCuadratica.vertices.forEach((v, i) => {
+            let normal = this.cabezalBezierCuadratica.normales[i];
+            let tangente = this.cabezalBezierCuadratica.tangentes[i];
             let matriz = this.matrizDeNivel(normal, tangente, v[0], y, v[1]);
             this.matrices.push(matriz);
-            y += 0.009;
+            y += 0.018;
         });
     }
     
