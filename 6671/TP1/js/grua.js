@@ -1,5 +1,5 @@
 class Grua {
-    constructor(posicion) {
+    constructor(getCamara, posicion) {
         this.posicion = posicion;
         this.posicionCamaraCabina = undefined;
         this.anguloCamaraCabina = 0;
@@ -20,6 +20,7 @@ class Grua {
         this.colorSoga = [0.3, 0.1, 0.0];
         this.colorPlataforma = [0.4, 0.2, 0.0];
         this.colorContrapeso = [0.5, 0.5, 0.5];
+        this.getCamara = getCamara;
     
         this.extrusorCuboA = this.crearColumna(1.5);
         this.extrusorCuboB = this.crearColumna(1.2);
@@ -182,6 +183,9 @@ class Grua {
     }
     
     keyEvent(event) {
+        if (this.getCamara() == camaraDrone) {
+            return;
+        }
         let key = event.keyCode || event.which;
         let keychar = String.fromCharCode(key);
         if (keychar == "Q") {

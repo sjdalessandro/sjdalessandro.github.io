@@ -24,6 +24,7 @@
         <script type="text/javascript" src="js/webgl-utils.js"></script>
         <script type="text/javascript" src="js/gl-matrix.js"></script>
         <script type="text/javascript" src="js/dat.gui.min.js"></script>
+        <script type="text/javascript" src="js/droneCamera.js"></script>
         <script type="text/javascript" src="js/cabezal.js"></script>
         <script type="text/javascript" src="js/extrusor.js"></script>
         <script type="text/javascript" src="js/trayectoria.js"></script>
@@ -144,7 +145,12 @@
 
             const camaraOrbital = 1;
             const camaraGrua = 2;
+            const camaraDrone = 3;
             var camara = camaraOrbital;
+            function getCamara(){
+                return camara;
+            }
+            let droneControl=new DroneCameraControl([0, 0.1, 30]);
 
             var menu = new function() {
                 this.pisosTramo1 = 6;
@@ -228,7 +234,7 @@
 
                     initMenu();
 
-                    grua = new Grua([-16, 0.0, 0]);
+                    grua = new Grua(getCamara, [-16, 0.0, 0]);
                     edificio = new Edificio(
                         [6, 0.0, 0],
                         menu.ventanasLargo,
@@ -329,9 +335,13 @@
                     camara = camaraOrbital;
                     vista();
                 } else if (keychar == "2") {
+                    camara = camaraDrone;
+                    vista();
+                } else if (keychar == "3") {
                     camara = camaraGrua;
                     vista();
                 }
+
                 if (camara == camaraOrbital) {
                     if (keychar == "E") {
                         if (radioCamara > 1) {
@@ -367,9 +377,17 @@
                 mat4.translate(viewMatrix, viewMatrix, [pos[0], pos[1], pos[2]]);
             }
 
+            function vistaDrone() {
+                droneControl.update();
+                viewMatrix = droneControl.getMatrix();
+                mat4.invert(viewMatrix, viewMatrix);
+            }
+
             function vista() {
                 if (camara == camaraGrua) {
                     vistaGrua();
+                } else if (camara == camaraDrone) {
+                    vistaDrone();
                 } else {
                     vistaOrbital();
                 }
@@ -450,6 +468,10 @@
             }
             
             function drawScene(){
+                if (camara == camaraDrone) {
+                    vistaDrone();
+                }
+
                 gl.clearColor(0.6, 0.8, 0.9, 1.0);     
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     
 

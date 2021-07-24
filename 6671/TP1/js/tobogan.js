@@ -20,7 +20,6 @@ class Tobogan {
             this.columnaB = new Extrusor(cabezalColumna, trayectoriaColumna, true);
         }
         this.posicion = [...edificio.posicion];
-        this.posicion[1] += this.diametro/2;
         this.posicion[2] += this.edificio.getToboganZ();
         this.actualizar();
     }
