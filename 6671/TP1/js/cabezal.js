@@ -20,9 +20,6 @@ class Cabezal {
 
     getNormal(u) {
         let i = this.getIndiceVertice(u);
-        if (!this.normales) {
-            return [0, 1, 0];
-        }
         return this.normales[i];
     }
 

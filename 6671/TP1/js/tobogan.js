@@ -64,19 +64,19 @@ class Tobogan {
         this.modificada = false;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, vista) {
+    draw(drawMalla, vista) {
         if (this.modificada) {
             this.actualizar();
             vista();
         }
 
         this.semiarcos.forEach(s => {
-            s.draw(setupVertexShaderMatrix, drawMalla, this.colorSemiarco);
+            s.drawSolido(drawMalla, this.colorSemiarco);
         });
 
         if (this.semiarcos.length > 0) {
-            this.columnaA.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-            this.columnaB.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
+            this.columnaA.draw(drawMalla, this.colorColumna);
+            this.columnaB.draw(drawMalla, this.colorColumna);
         }
     }
 }

@@ -36,7 +36,7 @@ class Edificio {
 
         let cabezalBase = new CabezalBaseEdificio(5, 7, 2);
         let trayectoriaBase = new TrayectoriaRecta(this.alturaBase);
-        this.base = new Extrusor(cabezalBase, trayectoriaBase, true);
+        this.base = new Extrusor(cabezalBase, trayectoriaBase, false);
 
         this.colorAscensores = [0.4, 0.3, 0.3];
         this.altoAscensores = (this.ventanaLado + this.alturaLosa) * (this.pisosTotales + 1);
@@ -182,20 +182,20 @@ class Edificio {
         this.modificada = false;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla) {
+    draw(drawMalla) {
         if (this.modificada) {
             this.actualizar();
         }
 
         this.pisos.forEach((piso, i) => {
-            piso.draw(setupVertexShaderMatrix, drawMalla);
+            piso.draw(drawMalla);
         });
-        this.ascensores.draw(setupVertexShaderMatrix, drawMalla, this.colorAscensores);
-        this.losa.draw(setupVertexShaderMatrix, drawMalla, this.pisos[0].colorLosa);
+        this.ascensores.draw(drawMalla, this.colorAscensores);
+        this.losa.draw(drawMalla, this.pisos[0].colorLosa);
         this.pisosChicos.forEach((piso, i) => {
-            piso.draw(setupVertexShaderMatrix, drawMalla);
+            piso.draw(drawMalla);
         });
-        this.base.draw(setupVertexShaderMatrix, drawMalla, this.colorBase);
+        this.base.draw(drawMalla, this.colorBase);
     }
  
     keyEvent(event) {

@@ -181,21 +181,21 @@ class Piso {
         }
     }
 
-    draw(setupVertexShaderMatrix, drawMalla) {
+    draw(drawMalla) {
         if (this.modificada) {
             this.actualizar();
         }
 
-        this.losa.draw(setupVertexShaderMatrix, drawMalla, this.colorLosa);
-        this.ventanalA.draw(setupVertexShaderMatrix, drawMalla, this.colorVentana);
-        this.ventanalB.draw(setupVertexShaderMatrix, drawMalla, this.colorVentana);
-        this.ventanalC.draw(setupVertexShaderMatrix, drawMalla, this.colorVentana);
-        this.ventanalD.draw(setupVertexShaderMatrix, drawMalla, this.colorVentana);
+        this.losa.draw(drawMalla, this.colorLosa);
+        this.ventanalA.draw(drawMalla, this.colorVentana);
+        this.ventanalB.draw(drawMalla, this.colorVentana);
+        this.ventanalC.draw(drawMalla, this.colorVentana);
+        this.ventanalD.draw(drawMalla, this.colorVentana);
         this.marcos.forEach(marco => {
-            marco.draw(setupVertexShaderMatrix, drawMalla, this.colorMarco);
+            marco.draw(drawMalla, this.colorMarco);
         });
         this.columnas.forEach(columna => {
-           columna.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
+           columna.draw(drawMalla, this.colorColumna);
         });
     }
     

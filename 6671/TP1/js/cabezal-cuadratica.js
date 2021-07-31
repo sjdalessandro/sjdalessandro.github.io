@@ -64,6 +64,7 @@ class CabezalCuadratica extends Cabezal {
         let pctrl = this.puntosDeControl.slice(t, t+3);
         let der = this.tangente(u - t*deltaU, pctrl);
         let normal = this.pcruz([0, 1, 0], [der[0], 0, der[1]]);
+        //let normal = this.pcruz([der[0], 0, der[1]], [0, 1, 0]);
         return this.normalize(normal);
     }
 
@@ -112,6 +113,7 @@ class CabezalCuadratica extends Cabezal {
             let tangente2D = this.tangente(u, puntosDeControl);
             let tangente = [tangente2D[0], 0, tangente2D[1]];
             let binormal = [0, 1, 0];
+            //let normal = this.pcruz(tangente, binormal);
             let normal = this.pcruz(binormal, tangente);
             puntos.push(this.normalize(normal));
         }

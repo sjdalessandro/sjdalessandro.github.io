@@ -160,26 +160,26 @@ class Grua {
         return modelMatrixEje;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, vista) {
+    draw(drawMalla, vista) {
         if (this.modificada) {
             this.actualizar();
             vista();
         }
 
-        this.extrusorCuboA.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-        this.extrusorCuboB.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-        this.extrusorCuboC.draw(setupVertexShaderMatrix, drawMalla, this.colorColumnaC);
-        this.cabina.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-        this.extrusorEjeE.draw(setupVertexShaderMatrix, drawMalla, this.colorEje);
-        this.brazo.draw(setupVertexShaderMatrix, drawMalla, this.colorBrazo);
-        this.extrusorEjeG.draw(setupVertexShaderMatrix, drawMalla, this.colorEje);
-        this.extrusorSoga.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaA.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaB.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaC.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaD.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.plataforma.draw(setupVertexShaderMatrix, drawMalla, this.colorPlataforma);
-        this.contrapeso.draw(setupVertexShaderMatrix, drawMalla, this.colorContrapeso);
+        this.extrusorCuboA.draw(drawMalla, this.colorColumna);
+        this.extrusorCuboB.draw(drawMalla, this.colorColumna);
+        this.extrusorCuboC.drawSolido(drawMalla, this.colorColumnaC);
+        this.cabina.draw(drawMalla, this.colorColumna);
+        this.extrusorEjeE.draw(drawMalla, this.colorEje);
+        this.brazo.draw(drawMalla, this.colorBrazo);
+        this.extrusorEjeG.draw(drawMalla, this.colorEje);
+        this.extrusorSoga.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaA.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaB.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaC.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaD.drawSolido(drawMalla, this.colorSoga);
+        this.plataforma.draw(drawMalla, this.colorPlataforma);
+        this.contrapeso.drawSolido(drawMalla, this.colorContrapeso);
     }
     
     keyEvent(event) {

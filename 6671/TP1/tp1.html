@@ -33,6 +33,7 @@
         <script type="text/javascript" src="js/trayectoria-tobogan.js"></script>
         <script type="text/javascript" src="js/grua.js"></script>
         <script type="text/javascript" src="js/cabina.js"></script>
+        <script type="text/javascript" src="js/cabezal-rectangulo.js"></script>
         <script type="text/javascript" src="js/cabezal-cuadratica.js"></script>
         <script type="text/javascript" src="js/cabezal-bezier-cuadratica.js"></script>
         <script type="text/javascript" src="js/cabezal-bspline-cuadratica.js"></script>
@@ -44,8 +45,28 @@
         <script type="text/javascript" src="js/edificio.js"></script>
         <script type="text/javascript" src="js/piso.js"></script>
         <script type="text/javascript" src="js/tobogan.js"></script>
-        
-        <script id="shader-vs" type="x-shader/x-vertex">
+
+        /*
+        attribute vec2 uv;
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+        }
+
+
+        uniform sampler2D textura;
+        varying vec2 vUv;
+        void main() {
+            vec4 color = vec4(1.0,0.0,0.0, 1.0);      
+            vec4 texColor=texture2D(textura, vUv); 
+            color.x=texColor.x;
+            color.y=texColor.y;
+            color.z=texColor.z;
+            gl_FragColor = color;
+        }
+        */
+
+        <script id="shader-vs-solido" type="x-shader/x-vertex">
 
             precision highp float;
 
@@ -66,41 +87,106 @@
 
                 vPosWorld=(modelMatrix*vec4(aVertexPosition,1.0)).xyz;    //la posicion en coordenadas de mundo
                 vNormal=normalize(normalMatrix*aVertexNormal);
+                
                 //vNormal=(normalMatrix*vec4(aVertexNormal,1.0)).xyz;       //la normal en coordenadas de mundo                
                 //vNormal=(modelMatrix*vec4(aVertexNormal,0.0)).xyz;
                 
             }
         </script>
 
-        <script id="shader-fs" type="x-shader/x-fragment">
+
+        <script id="shader-fs-solido" type="x-shader/x-fragment">
             precision highp float;
             uniform vec3 color;
+            uniform vec3 viewPos;
 
             varying vec3 vNormal;
             varying vec3 vPosWorld;
 
             void main(void) {
 
-                /*
-                vec3 lightVec=normalize(vec3(0.0,3.0,5.0)-vPosWorld);
-                vec3 diffColor=mix(vec3(0.7,0.7,0.7),vNormal,0.4);
-                vec3 colorB=dot(lightVec,vNormal)*diffColor+vec3(0.2,0.2,0.2);
-                gl_FragColor = vec4(colorB, 1.0);
-                */
-                float ambientStrength = 1.0;
+                float ambientStrength = 0.5;
                 vec3 lightColor = vec3(1.0, 1.0, 0.9);
                 vec3 ambient = ambientStrength * lightColor;
 
                 vec3 norm = normalize(vNormal);
-                vec3 lightPos = vec3(300.0, 10.0, 100.0);
+                float diffuseStrength = 0.8;
+                vec3 lightPos = vec3(160.0, 20.0, 128.0);
                 vec3 lightDir = normalize(lightPos - vPosWorld);  
                 float diff = max(dot(norm, lightDir), 0.0);
-                vec3 diffuse = diff * lightColor;
+                vec3 diffuse = diffuseStrength * diff * lightColor;
 
-                vec3 result = (ambient + diffuse) * color;
+                vec3 specularLightColor = vec3(1.0, 1.0, 1.0);
+                float specularStrength = 1.0;
+                vec3 viewDir = normalize(viewPos - vPosWorld);
+                vec3 reflectDir = reflect(-lightDir, norm);
+                float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
+                vec3 specular = specularStrength * spec * specularLightColor;  
+                
+                vec3 result = (ambient + diffuse + specular) * color;
                 gl_FragColor = vec4(result, 1.0);
+            }
+        </script>
 
-                //gl_FragColor = vec4(color, 1.0);
+        <script id="shader-vs-incorrecto" type="x-shader/x-vertex">
+
+            precision highp float;
+
+            attribute vec3 aVertexPosition;
+            attribute vec3 aVertexNormal;
+
+            uniform mat4 modelMatrix;            
+            uniform mat4 viewMatrix;
+            uniform mat4 projMatrix;
+
+            uniform mat3 normalMatrix;
+
+            varying vec3 vPosWorld;  
+            varying vec3 vNormal;    
+
+            void main(void) {
+                gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(aVertexPosition, 1.0);
+
+                vPosWorld=(modelMatrix*vec4(aVertexPosition,1.0)).xyz;    //la posicion en coordenadas de mundo
+                vNormal=normalize(normalMatrix*aVertexNormal);
+                
+                //vNormal=(normalMatrix*vec4(aVertexNormal,1.0)).xyz;       //la normal en coordenadas de mundo                
+                //vNormal=(modelMatrix*vec4(aVertexNormal,0.0)).xyz;
+                
+            }
+        </script>
+
+
+        <script id="shader-fs-incorrecto" type="x-shader/x-fragment">
+            precision highp float;
+            uniform vec3 color;
+            uniform vec3 viewPos;
+
+            varying vec3 vNormal;
+            varying vec3 vPosWorld;
+
+            void main(void) {
+
+                float ambientStrength = 0.5;
+                vec3 lightColor = vec3(1.0, 1.0, 0.9);
+                vec3 ambient = ambientStrength * lightColor;
+
+                vec3 norm = normalize(vNormal);
+                float diffuseStrength = 0.8;
+                vec3 lightPos = vec3(160.0, 20.0, 128.0);
+                vec3 lightDir = normalize(lightPos - vPosWorld);  
+                float diff = max(dot(norm, lightDir), 0.0);
+                vec3 diffuse = diffuseStrength * diff * lightColor;
+
+                vec3 specularLightColor = vec3(1.0, 1.0, 1.0);
+                float specularStrength = 1.0;
+                vec3 viewDir = normalize(viewPos - vPosWorld);
+                vec3 reflectDir = reflect(-lightDir, norm);
+                float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
+                vec3 specular = specularStrength * spec * specularLightColor;  
+                
+                vec3 result = (ambient + diffuse + specular) * vec3(0.0, 0.0, 0.0);
+                gl_FragColor = vec4(result, 1.0);
             }
         </script>
         
@@ -113,7 +199,10 @@
             var gl = null;
             var canvas = null,
 
-            glProgram = null,
+            glPrograms = {
+                solido: undefined,
+                incorrecto: undefined
+            },
             fragmentShader = null,
             vertexShader = null;
                 
@@ -147,6 +236,7 @@
             const camaraGrua = 2;
             const camaraDrone = 3;
             var camara = camaraOrbital;
+            var posicionCamara = [0, 0, 0];
             function getCamara(){
                 return camara;
             }
@@ -367,6 +457,7 @@
                 }
                 mat4.rotate(viewMatrix,viewMatrix, (phi/90)*Math.PI/2, [1.0, 0.0, 0.0]);
                 mat4.rotate(viewMatrix,viewMatrix, (theta/360)*2*Math.PI, [0.0, 1.0, 0.0]);
+                updateCameraPosition();
             }
 
             function vistaGrua() {
@@ -375,12 +466,20 @@
                 let ang = grua.anguloCamaraCabina;
                 mat4.rotate(viewMatrix, viewMatrix, ang, [0.0, 1.0, 0.0]);
                 mat4.translate(viewMatrix, viewMatrix, [pos[0], pos[1], pos[2]]);
+                updateCameraPosition();
             }
 
             function vistaDrone() {
                 droneControl.update();
                 viewMatrix = droneControl.getMatrix();
                 mat4.invert(viewMatrix, viewMatrix);
+                updateCameraPosition();
+            }
+
+            function updateCameraPosition() {
+                var cameraMatrix = mat4.create();
+                mat4.invert(cameraMatrix, viewMatrix);
+                posicionCamara = [cameraMatrix[12], cameraMatrix[13], cameraMatrix[14]];
             }
 
             function vista() {
@@ -394,16 +493,26 @@
             }
 
             function initShaders() {
+                glPrograms.incorrecto = initShader('shader-fs-incorrecto', 'shader-vs-incorrecto');
+                glPrograms.incorrecto.setup = setupUniforms;
+                initUniforms(glPrograms.incorrecto)
+
+                glPrograms.solido = initShader('shader-fs-solido', 'shader-vs-solido');
+                glPrograms.solido.setup = setupUniformsSolido;
+                initUniformsSolido(glPrograms.solido);
+            }
+
+            function initShader(fs, vs) {
                 //get shader source
-                var fs_source = document.getElementById('shader-fs').innerHTML,
-                    vs_source = document.getElementById('shader-vs').innerHTML;
+                var fs_source = document.getElementById(fs).innerHTML,
+                    vs_source = document.getElementById(vs).innerHTML;
 
                 //compile shaders    
                 vertexShader = makeShader(vs_source, gl.VERTEX_SHADER);
                 fragmentShader = makeShader(fs_source, gl.FRAGMENT_SHADER);
                 
                 //create program
-                glProgram = gl.createProgram();
+                let glProgram = gl.createProgram();
                 
                 //attach and link shaders to the program
                 gl.attachShader(glProgram, vertexShader);
@@ -414,15 +523,30 @@
                     console.log("Error: Unable to initialize the shader program.");
                 }
                 
+                return glProgram;
+            }
+
+            function initUniforms(glProgram){
                 //use program
-                gl.useProgram(glProgram);
+                //gl.useProgram(glProgram);
                 
                 glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
                 gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
         
                 glProgram.vertexNormalAttribute = gl.getAttribLocation(glProgram, "aVertexNormal");
                 gl.enableVertexAttribArray(glProgram.vertexNormalAttribute);
-            }
+
+                glProgram.modelMatrixUniform = gl.getUniformLocation(glProgram, "modelMatrix");
+                glProgram.viewMatrixUniform  = gl.getUniformLocation(glProgram, "viewMatrix");
+                glProgram.projMatrixUniform  = gl.getUniformLocation(glProgram, "projMatrix");
+                glProgram.normalMatrixUniform  = gl.getUniformLocation(glProgram, "normalMatrix");
+                glProgram.viewPosUniform = gl.getUniformLocation(glProgram, "viewPos");
+            }   
+
+            function initUniformsSolido(glProgram){
+                initUniforms(glProgram);
+                glProgram.colorUniform = gl.getUniformLocation(glProgram, "color");
+            }   
 
             function makeShader(src, type){
                 //compile the vertex shader
@@ -436,25 +560,68 @@
                 return shader;
             }
 
-            function setupVertexShaderMatrix(modelMatrix, color){
-                var modelMatrixUniform = gl.getUniformLocation(glProgram, "modelMatrix");
-                var viewMatrixUniform  = gl.getUniformLocation(glProgram, "viewMatrix");
-                var projMatrixUniform  = gl.getUniformLocation(glProgram, "projMatrix");
-                var normalMatrixUniform  = gl.getUniformLocation(glProgram, "normalMatrix");
-                var colorUniform = gl.getUniformLocation(glProgram, "color");
+            function initTexture(file){
+
+                var texture = gl.createTexture();
+                texture.image = new Image();
+
+                //textures.push(texture);
+
+                texture.image.onload = function () {
+
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 					// invierto el ejeY					
+                gl.bindTexture(gl.TEXTURE_2D, texture); 						// activo la textura
+
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);	// cargo el bitmap en la GPU
+
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);					// selecciono filtro de magnificacion
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);	// selecciono filtro de minificacion
+
+                gl.generateMipmap(gl.TEXTURE_2D);		// genero los mipmaps
+                gl.bindTexture(gl.TEXTURE_2D, null);
+
+                totalTexturas--;
+                if (totalTexturas==0) initFase2();
+                }
+                texture.image.src = file;
+            }
+
+            function initFase2(){
+                setupWebGL();
+                initShaders();
+                setupBuffers();	
+
+                var gui = new dat.GUI();				
+                gui.add(window,"scale1",0.1,3).step(0.01);
+                gui.add(window,"low",-1,1).step(0.01);
+                gui.add(window,"high",-1,1).step(0.01);
+                
+                drawScene();    
+            }
+
+            function setupUniforms(modelMatrix, glProgram){
+                gl.useProgram(glProgram);
 
                 mat3.fromMat4(normalMatrix, modelMatrix);
                 mat3.invert(normalMatrix, normalMatrix);
                 mat3.transpose(normalMatrix, normalMatrix);
 
-                gl.uniformMatrix4fv(modelMatrixUniform, false, modelMatrix);
-                gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
-                gl.uniformMatrix4fv(projMatrixUniform, false, projMatrix);
-                gl.uniformMatrix3fv(normalMatrixUniform, false, normalMatrix);
-                gl.uniform3fv(colorUniform, color);
+                gl.uniformMatrix4fv(glProgram.modelMatrixUniform, false, modelMatrix);
+                gl.uniformMatrix4fv(glProgram.viewMatrixUniform, false, viewMatrix);
+                gl.uniformMatrix4fv(glProgram.projMatrixUniform, false, projMatrix);
+                gl.uniformMatrix3fv(glProgram.normalMatrixUniform, false, normalMatrix);
+                gl.uniform3fv(glProgram.viewPosUniform, posicionCamara);
             }   
-            
-            function drawMalla(mallaDeTriangulos) {
+
+            function setupUniformsSolido(modelMatrix, glProgram, color){
+                setupUniforms(modelMatrix, glProgram);
+
+                glProgram.colorUniform = gl.getUniformLocation(glProgram, "color");
+
+                gl.uniform3fv(glProgram.colorUniform, color);
+            }   
+
+            function drawMalla(mallaDeTriangulos, glProgram) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, mallaDeTriangulos.webgl_position_buffer);
                 gl.vertexAttribPointer(glProgram.vertexPositionAttribute, mallaDeTriangulos.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -475,10 +642,10 @@
                 gl.clearColor(0.6, 0.8, 0.9, 1.0);     
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     
 
-                tierra.draw(setupVertexShaderMatrix, drawMalla, colorTierra);
-                grua.draw(setupVertexShaderMatrix, drawMalla, vista);
-                edificio.draw(setupVertexShaderMatrix, drawMalla);
-                tobogan.draw(setupVertexShaderMatrix, drawMalla);
+                tierra.draw(drawMalla, colorTierra);
+                grua.draw(drawMalla, vista);
+                edificio.draw(drawMalla);
+                tobogan.draw(drawMalla);
             }
 
             function tick(){

@@ -21,7 +21,8 @@ class Extrusor {
 
     getNormal(u, v) {
 
-        let normal = this.cabezal.getNormal(u);
+        let normal2D = this.cabezal.getNormal(u);
+        let normal = this.trayectoria.getNormal(normal2D, v);
         return normal;
     }
 
@@ -223,8 +224,13 @@ class Extrusor {
         this.modelMatrix = modelMatrix;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, color) {
-        setupVertexShaderMatrix(this.getModelMatrix(), color);
-        drawMalla(this.getMalla());
+    drawSolido(drawMalla, color) {
+        glPrograms.solido.setup(this.getModelMatrix(), glPrograms.solido, color);
+        drawMalla(this.getMalla(), glPrograms.solido);
+    }
+
+    draw(drawMalla) {
+        glPrograms.incorrecto.setup(this.getModelMatrix(), glPrograms.incorrecto);
+        drawMalla(this.getMalla(), glPrograms.incorrecto);
     }
 }

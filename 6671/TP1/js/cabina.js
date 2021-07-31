@@ -85,17 +85,17 @@ class Cabina {
         extrusor.setModelMatrix(modelMatrixSoporte);
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, color) {
+    draw(drawMalla, color) {
         if (this.modificada) {
             this.actualizar();
         }
 
-        this.extrusorPiso.draw(setupVertexShaderMatrix, drawMalla, color);
-        this.lateralA.draw(setupVertexShaderMatrix, drawMalla, color);
-        this.lateralB.draw(setupVertexShaderMatrix, drawMalla, color);
-        this.extrusorTecho.draw(setupVertexShaderMatrix, drawMalla, color);
-        this.extrusorSoporteA.draw(setupVertexShaderMatrix, drawMalla, color);
-        this.extrusorSoporteB.draw(setupVertexShaderMatrix, drawMalla, color);
-        this.fondo.draw(setupVertexShaderMatrix, drawMalla, color);
+        this.extrusorPiso.draw(drawMalla, color);
+        this.lateralA.draw(drawMalla, color);
+        this.lateralB.draw(drawMalla, color);
+        this.extrusorTecho.draw(drawMalla, color);
+        this.extrusorSoporteA.draw(drawMalla, color);
+        this.extrusorSoporteB.draw(drawMalla, color);
+        this.fondo.draw(drawMalla, color);
     }
 }
