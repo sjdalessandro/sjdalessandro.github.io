@@ -5,8 +5,8 @@ class CabezalBaseEdificio extends Cabezal {
                          [-ancho, largo],
 
                          [-puerta/2, largo],
-                         [-puerta/2, -largo*0.99],
-                         [puerta/2, -largo*0.99],
+                         [-puerta/2, largo*0.9],
+                         [puerta/2, largo*0.9],
                          [puerta/2, largo],
                          
                          [ancho, largo],

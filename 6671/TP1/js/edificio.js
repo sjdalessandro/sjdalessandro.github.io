@@ -34,7 +34,7 @@ class Edificio {
 
         this.verticesLosa = this.getVerticesLosa();
 
-        let cabezalBase = new CabezalBaseEdificio(5, 7, 2);
+        let cabezalBase = new CabezalBaseEdificio(this.ancho/2, this.largo/2, this.ancho/4);
         let trayectoriaBase = new TrayectoriaRecta(this.alturaBase);
         this.base = new Extrusor(cabezalBase, trayectoriaBase, false, texturaRepetida);
 
