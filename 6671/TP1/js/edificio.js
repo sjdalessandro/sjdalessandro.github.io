@@ -37,6 +37,7 @@ class Edificio {
         let cabezalBase = new CabezalBaseEdificio(this.ancho/2, this.largo/2, this.ancho/4);
         let trayectoriaBase = new TrayectoriaRecta(this.alturaBase);
         this.base = new Extrusor(cabezalBase, trayectoriaBase, false, texturaRepetida);
+        this.entrada = new Cuboide(this.ancho/4, 0.5, this.alturaBase, true);
 
         this.altoAscensores = (this.ventanaLado + this.alturaLosa) * (this.pisosTotales + 1);
         this.ascensores = new Cuboide(3, 7, this.altoAscensores, true, texturaAjustadaXRepetidaY, texturaAjustada);
@@ -150,6 +151,10 @@ class Edificio {
 
         this.base.setModelMatrix(modelMatrixA);
 
+        let modelMatrixEntrada = mat4.create();
+        mat4.translate(modelMatrixEntrada, modelMatrixA, [0, 0, this.largo/2-1]);
+        this.entrada.setModelMatrix(modelMatrixEntrada);
+
         let modelMatrixBase = mat4.create();
         mat4.translate(modelMatrixBase, modelMatrixA, [0, this.alturaBase, 0]);
 
@@ -195,6 +200,7 @@ class Edificio {
             piso.draw(drawMalla);
         });
         this.base.drawTexturado(drawMalla, texturas.baseEdificio);
+        this.entrada.draw(drawMalla);
     }
  
     keyEvent(event) {
