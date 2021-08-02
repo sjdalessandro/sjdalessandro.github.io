@@ -19,7 +19,6 @@ class Piso {
         this.colorVentana = [0, 0.3, 0.8];
 
         this.alturaLosa = 0.3;
-        this.colorLosa = [0.3, 0.2, 0.2];
 
         this.diametroColumna = 0.8;
         this.colorColumna = [0.3, 0.7, 0.3];
@@ -80,7 +79,7 @@ class Piso {
     crearLosa(verticesLosa, chico) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaAjustada);
     }
 
     actualizar(modelMatrixA) {
@@ -186,16 +185,16 @@ class Piso {
             this.actualizar();
         }
 
-        this.losa.draw(drawMalla, this.colorLosa);
+        this.losa.drawTexturado(drawMalla, texturas.cemento);
         this.ventanalA.draw(drawMalla, this.colorVentana);
         this.ventanalB.draw(drawMalla, this.colorVentana);
         this.ventanalC.draw(drawMalla, this.colorVentana);
         this.ventanalD.draw(drawMalla, this.colorVentana);
         this.marcos.forEach(marco => {
-            marco.draw(drawMalla, this.colorMarco);
+            marco.drawTexturado(drawMalla, texturas.marco);
         });
         this.columnas.forEach(columna => {
-           columna.draw(drawMalla, this.colorColumna);
+           columna.drawTexturado(drawMalla, texturas.columna);
         });
     }
     

@@ -1,7 +1,7 @@
 class Cuboide extends Extrusor {
-    constructor(ladoA, ladoB, ladoC, tapar) {
+    constructor(ladoA, ladoB, ladoC, tapar, tipoTextura, tipoTexturaEnTapa) {
         let cabezalRectangulo = new CabezalRectangulo(ladoA, ladoB, ladoA/5);
         let trayectoriaBase = new TrayectoriaRecta(ladoC);
-        super(cabezalRectangulo, trayectoriaBase, tapar);
+        super(cabezalRectangulo, trayectoriaBase, tapar, tipoTextura, tipoTexturaEnTapa);
     }
 }

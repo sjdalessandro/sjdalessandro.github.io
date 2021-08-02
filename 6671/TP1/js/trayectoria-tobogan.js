@@ -15,5 +15,6 @@ class TrayectoriaTobogan extends TrayectoriaBezierCuadratica {
             [2, -1],
             [0.8, -1]]; 
         super(puntosDeControl);
+        this.calcularMedidas();
     }
 }

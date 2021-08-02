@@ -31,22 +31,7 @@ class CabezalCuadratica extends Cabezal {
             this.normales = [...this.normales, ...normalesTramo];
         }
 
-        /*
-        // Con los extremos sobre la curva
-        let a = 4;
-        this.vertices = [];
-
-        this.base0 = function(u) { return (1-u)*(1-u); }
-        this.base1 = function(u) { return 2*u*(1-u); }
-        this.base2 = function(u) { return u*u; }
-
-        console.log("tramos: ", this.vertices.length - 2);
-
-        this.vertices = [...this.vertices, ...this.getVertices([[-a, 0], [-a, a], [0, a]])];
-        this.vertices = [...this.vertices, ...this.getVertices([[0, a], [a, a], [a, 0]])];
-        this.vertices = [...this.vertices, ...this.getVertices([[a, 0], [a, -a], [0, -a]])];
-        this.vertices = [...this.vertices, ...this.getVertices([[0, -a], [-a, -a], [-a, 0]])];
-        */
+        this.calcularMedidas();
     }
 
     getVertice(u) {

@@ -26,6 +26,8 @@ class CabezalRectangulo extends Cabezal {
             n.push(this.normales[i]);
         }
         this.normales = n;
+
+        this.calcularMedidas();
     }
 
     getCentro() {

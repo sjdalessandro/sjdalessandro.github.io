@@ -12,20 +12,20 @@ class Cabina {
         this.extrusorSoporteA = this.crearSoporte(0.8);
         this.extrusorSoporteB = this.crearSoporte(0.8);
 
-        this.lateralA = new Cuboide(3, this.altura, this.pared, true);
-        this.lateralB = new Cuboide(3, this.altura, this.pared, true);
+        this.lateralA = new Cuboide(3, this.altura, this.pared, true, texturaAjustada, texturaAjustada);
+        this.lateralB = new Cuboide(3, this.altura, this.pared, true, texturaAjustada, texturaAjustada);
 
-        this.fondo = new Cuboide(this.altura, 3, this.pared, true);
+        this.fondo = new Cuboide(this.altura, 3, this.pared, true, texturaAjustada, texturaAjustada);
 
         this.actualizar();
     }
 
     crearPlataforma(ancho, largo) {
-        return new Cuboide(ancho, largo, this.pared, true);
+        return new Cuboide(ancho, largo, this.pared, true, texturaAjustada, texturaAjustada);
     }
 
     crearSoporte(ancho) {
-        return new Cuboide(ancho, this.alturaSoporte, this.pared, true);
+        return new Cuboide(ancho, this.alturaSoporte, this.pared, true, texturaAjustada, texturaAjustada);
     }
 
     actualizar(modelMatrixPiso) {
@@ -85,17 +85,17 @@ class Cabina {
         extrusor.setModelMatrix(modelMatrixSoporte);
     }
 
-    draw(drawMalla, color) {
+    draw(drawMalla, textura) {
         if (this.modificada) {
             this.actualizar();
         }
 
-        this.extrusorPiso.draw(drawMalla, color);
-        this.lateralA.draw(drawMalla, color);
-        this.lateralB.draw(drawMalla, color);
-        this.extrusorTecho.draw(drawMalla, color);
-        this.extrusorSoporteA.draw(drawMalla, color);
-        this.extrusorSoporteB.draw(drawMalla, color);
-        this.fondo.draw(drawMalla, color);
+        this.extrusorPiso.drawTexturado(drawMalla, textura);
+        this.lateralA.drawTexturado(drawMalla, textura);
+        this.lateralB.drawTexturado(drawMalla, textura);
+        this.extrusorTecho.drawTexturado(drawMalla, textura);
+        this.extrusorSoporteA.drawTexturado(drawMalla, textura);
+        this.extrusorSoporteB.drawTexturado(drawMalla, textura);
+        this.fondo.drawTexturado(drawMalla, textura);
     }
 }

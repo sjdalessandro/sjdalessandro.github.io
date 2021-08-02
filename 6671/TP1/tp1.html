@@ -46,172 +46,27 @@
         <script type="text/javascript" src="js/piso.js"></script>
         <script type="text/javascript" src="js/tobogan.js"></script>
 
-        /*
-        attribute vec2 uv;
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-        }
+        <script src="shaders/solido-vertex.glsl"></script>
+        <script src="shaders/solido-fragment.glsl"></script>
 
+        <script src="shaders/texturado-vertex.glsl"></script>
+        <script src="shaders/texturado-fragment.glsl"></script>
 
-        uniform sampler2D textura;
-        varying vec2 vUv;
-        void main() {
-            vec4 color = vec4(1.0,0.0,0.0, 1.0);      
-            vec4 texColor=texture2D(textura, vUv); 
-            color.x=texColor.x;
-            color.y=texColor.y;
-            color.z=texColor.z;
-            gl_FragColor = color;
-        }
-        */
+        <script src="shaders/incorrecto-vertex.glsl"></script>
+        <script src="shaders/incorrecto-fragment.glsl"></script>
 
-        <script id="shader-vs-solido" type="x-shader/x-vertex">
-
-            precision highp float;
-
-            attribute vec3 aVertexPosition;
-            attribute vec3 aVertexNormal;
-
-            uniform mat4 modelMatrix;            
-            uniform mat4 viewMatrix;
-            uniform mat4 projMatrix;
-
-            uniform mat3 normalMatrix;
-
-            varying vec3 vPosWorld;  
-            varying vec3 vNormal;    
-
-            void main(void) {
-                gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(aVertexPosition, 1.0);
-
-                vPosWorld=(modelMatrix*vec4(aVertexPosition,1.0)).xyz;    //la posicion en coordenadas de mundo
-                vNormal=normalize(normalMatrix*aVertexNormal);
-                
-                //vNormal=(normalMatrix*vec4(aVertexNormal,1.0)).xyz;       //la normal en coordenadas de mundo                
-                //vNormal=(modelMatrix*vec4(aVertexNormal,0.0)).xyz;
-                
-            }
-        </script>
-
-
-        <script id="shader-fs-solido" type="x-shader/x-fragment">
-            precision highp float;
-            uniform vec3 color;
-            uniform vec3 viewPos;
-
-            varying vec3 vNormal;
-            varying vec3 vPosWorld;
-
-            void main(void) {
-
-                float ambientStrength = 0.5;
-                vec3 lightColor = vec3(1.0, 1.0, 0.9);
-                vec3 ambient = ambientStrength * lightColor;
-
-                vec3 norm = normalize(vNormal);
-                float diffuseStrength = 0.8;
-                vec3 lightPos = vec3(160.0, 20.0, 128.0);
-                vec3 lightDir = normalize(lightPos - vPosWorld);  
-                float diff = max(dot(norm, lightDir), 0.0);
-                vec3 diffuse = diffuseStrength * diff * lightColor;
-
-                vec3 specularLightColor = vec3(1.0, 1.0, 1.0);
-                float specularStrength = 1.0;
-                vec3 viewDir = normalize(viewPos - vPosWorld);
-                vec3 reflectDir = reflect(-lightDir, norm);
-                float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
-                vec3 specular = specularStrength * spec * specularLightColor;  
-                
-                vec3 result = (ambient + diffuse + specular) * color;
-                gl_FragColor = vec4(result, 1.0);
-            }
-        </script>
-
-        <script id="shader-vs-incorrecto" type="x-shader/x-vertex">
-
-            precision highp float;
-
-            attribute vec3 aVertexPosition;
-            attribute vec3 aVertexNormal;
-
-            uniform mat4 modelMatrix;            
-            uniform mat4 viewMatrix;
-            uniform mat4 projMatrix;
-
-            uniform mat3 normalMatrix;
-
-            varying vec3 vPosWorld;  
-            varying vec3 vNormal;    
-
-            void main(void) {
-                gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(aVertexPosition, 1.0);
-
-                vPosWorld=(modelMatrix*vec4(aVertexPosition,1.0)).xyz;    //la posicion en coordenadas de mundo
-                vNormal=normalize(normalMatrix*aVertexNormal);
-                
-                //vNormal=(normalMatrix*vec4(aVertexNormal,1.0)).xyz;       //la normal en coordenadas de mundo                
-                //vNormal=(modelMatrix*vec4(aVertexNormal,0.0)).xyz;
-                
-            }
-        </script>
-
-
-        <script id="shader-fs-incorrecto" type="x-shader/x-fragment">
-            precision highp float;
-            uniform vec3 color;
-            uniform vec3 viewPos;
-
-            varying vec3 vNormal;
-            varying vec3 vPosWorld;
-
-            void main(void) {
-
-                float ambientStrength = 0.5;
-                vec3 lightColor = vec3(1.0, 1.0, 0.9);
-                vec3 ambient = ambientStrength * lightColor;
-
-                vec3 norm = normalize(vNormal);
-                float diffuseStrength = 0.8;
-                vec3 lightPos = vec3(160.0, 20.0, 128.0);
-                vec3 lightDir = normalize(lightPos - vPosWorld);  
-                float diff = max(dot(norm, lightDir), 0.0);
-                vec3 diffuse = diffuseStrength * diff * lightColor;
-
-                vec3 specularLightColor = vec3(1.0, 1.0, 1.0);
-                float specularStrength = 1.0;
-                vec3 viewDir = normalize(viewPos - vPosWorld);
-                vec3 reflectDir = reflect(-lightDir, norm);
-                float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
-                vec3 specular = specularStrength * spec * specularLightColor;  
-                
-                vec3 result = (ambient + diffuse + specular) * vec3(0.0, 0.0, 0.0);
-                gl_FragColor = vec4(result, 1.0);
-            }
-        </script>
-        
         <script>
-
             var mat3=glMatrix.mat3;
             var mat4=glMatrix.mat4;
             var vec3=glMatrix.vec3;
 
             var gl = null;
             var canvas = null,
-
-            glPrograms = {
-                solido: undefined,
-                incorrecto: undefined
-            },
+            glPrograms = {},
+            texturas = {},
             fragmentShader = null,
             vertexShader = null;
-                
-            var vertexPositionAttribute = null,
-            trianglesVerticeBuffer = null,
-            vertexNormalAttribute = null,
-            trianglesNormalBuffer = null,
-            trianglesIndexBuffer = null;
-               
+
             var viewMatrix = mat4.create();
             var projMatrix = mat4.create();
             var normalMatrix = mat3.create();
@@ -241,6 +96,10 @@
                 return camara;
             }
             let droneControl=new DroneCameraControl([0, 0.1, 30]);
+
+            const texturaAjustada = 0;
+            const texturaRepetida = 1;
+            const texturaAjustadaXRepetidaY = 2;
 
             var menu = new function() {
                 this.pisosTramo1 = 6;
@@ -292,79 +151,71 @@
             }
 
             function initWebGL(){
-
                 canvas = document.getElementById("my-canvas");  
-
-                try{
+                try {
                     gl = canvas.getContext("webgl");      
-
-                }catch(e){
+                    return true;
+                } catch(e) {
                     console.log("Error: Your browser does not appear to support WebGL.");
                 }
+                return false;
+            }
 
-                if(gl) {
+            function initApp(){
+                window.addEventListener("keydown", event => {
+                    this.keyEvent(event);
+                }, false);
+                window.addEventListener("mousedown", event => {
+                    this.mousedownEvent(event);
+                }, false);
+                window.addEventListener("mouseup", event => {
+                    this.mouseupEvent(event);
+                }, false);
+                window.addEventListener("mousemove", event => {
+                    this.mousemoveEvent(event);
+                }, false);
+                window.addEventListener("resize", event => {
+                    this.resizeEvent(event);
+                }, false);
 
-                    window.addEventListener("keydown", event => {
-                        this.keyEvent(event);
-                    }, false);
-                    window.addEventListener("mousedown", event => {
-                        this.mousedownEvent(event);
-                    }, false);
-                    window.addEventListener("mouseup", event => {
-                        this.mouseupEvent(event);
-                    }, false);
-                    window.addEventListener("mousemove", event => {
-                        this.mousemoveEvent(event);
-                    }, false);
-                    window.addEventListener("resize", event => {
-                        this.resizeEvent(event);
-                    }, false);
+                const ladoTierra = 10000;
 
-                    const ladoTierra = 10000;
+                initMenu();
 
-                    initMenu();
+                grua = new Grua(getCamara, [-16, 0.0, 0]);
+                edificio = new Edificio(
+                    [6, 0.0, 0],
+                    menu.ventanasLargo,
+                    menu.ventanasAncho,
+                    menu.pisosTramo1,
+                    menu.pisosTramo2,
+                    menu.columnas
+                );
+                tierra = new Cuboide(ladoTierra, ladoTierra, 1, true);
+                let diametroTobogan = 0.8;
+                tobogan = new Tobogan(edificio, diametroTobogan, 6);
 
-                    grua = new Grua(getCamara, [-16, 0.0, 0]);
-                    edificio = new Edificio(
-                        [6, 0.0, 0],
-                        menu.ventanasLargo,
-                        menu.ventanasAncho,
-                        menu.pisosTramo1,
-                        menu.pisosTramo2,
-                        menu.columnas
-                    );
-                    tierra = new Cuboide(ladoTierra, ladoTierra, 1, true);
-                    let diametroTobogan = 0.8;
-                    tobogan = new Tobogan(edificio, diametroTobogan, 6);
+                let modelMatrixTierra = mat4.create();
+                mat4.identity(modelMatrixTierra);
+                mat4.translate(modelMatrixTierra, modelMatrixTierra, [0, -1.0, 0]);
+                tierra.setModelMatrix(modelMatrixTierra);
 
-                    let modelMatrixTierra = mat4.create();
-                    mat4.identity(modelMatrixTierra);
-                    mat4.translate(modelMatrixTierra, modelMatrixTierra, [0, -1.0, 0]);
-                    tierra.setModelMatrix(modelMatrixTierra);
-
-                    resizeEvent();
-                    setupWebGL();
-                    initShaders();
-                    tick();   
-
-                }else{    
-                    console.log("Error: Your browser does not appear to support WebGL.");
-                }
-
+                resizeEvent();
+                setupWebGL();
+                initShaders();
+                tick();   
             }
 
             function setupWebGL(){
                 gl.enable(gl.DEPTH_TEST);
+
                 //set the clear color
                 gl.clearColor(0.1, 0.1, 0.2, 1.0);     
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     
-    
                 gl.viewport(0, 0, canvas.width, canvas.height);
 
                 // Matrix de Proyeccion Perspectiva
-
-                mat4.perspective(projMatrix,45, canvas.width / canvas.height, 0.1, 100.0);
-                                
+                mat4.perspective(projMatrix, 45, canvas.width / canvas.height, 0.1, 100.0);
                 mat3.identity(normalMatrix);
 
                 vista();
@@ -446,7 +297,6 @@
             }
 
             function vistaOrbital() {
-                // Orbital
                 mat4.identity(viewMatrix);
                 mat4.translate(viewMatrix,viewMatrix, [0.0, -10.0, -radioCamara]);
                 if (phi > 90) {
@@ -493,19 +343,21 @@
             }
 
             function initShaders() {
-                glPrograms.incorrecto = initShader('shader-fs-incorrecto', 'shader-vs-incorrecto');
+
+                glPrograms.incorrecto = initShader(incorrectoFragmentShader, incorrectoVertexShader);
                 glPrograms.incorrecto.setup = setupUniforms;
                 initUniforms(glPrograms.incorrecto)
 
-                glPrograms.solido = initShader('shader-fs-solido', 'shader-vs-solido');
+                glPrograms.solido = initShader(solidoFragmentShader, solidoVertexShader);
                 glPrograms.solido.setup = setupUniformsSolido;
                 initUniformsSolido(glPrograms.solido);
+
+                glPrograms.texturado = initShader(texturadoFragmentShader, texturadoVertexShader);
+                glPrograms.texturado.setup = setupUniformsTexturado;
+                initUniformsTexturado(glPrograms.texturado);
             }
 
-            function initShader(fs, vs) {
-                //get shader source
-                var fs_source = document.getElementById(fs).innerHTML,
-                    vs_source = document.getElementById(vs).innerHTML;
+            function initShader(fs_source, vs_source) {
 
                 //compile shaders    
                 vertexShader = makeShader(vs_source, gl.VERTEX_SHADER);
@@ -527,15 +379,15 @@
             }
 
             function initUniforms(glProgram){
-                //use program
-                //gl.useProgram(glProgram);
-                
                 glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
                 gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
         
                 glProgram.vertexNormalAttribute = gl.getAttribLocation(glProgram, "aVertexNormal");
                 gl.enableVertexAttribArray(glProgram.vertexNormalAttribute);
 
+                glProgram.vertexUvAttribute = gl.getAttribLocation(glProgram, "aUv");
+                gl.enableVertexAttribArray(glProgram.vertexUvAttribute);
+                
                 glProgram.modelMatrixUniform = gl.getUniformLocation(glProgram, "modelMatrix");
                 glProgram.viewMatrixUniform  = gl.getUniformLocation(glProgram, "viewMatrix");
                 glProgram.projMatrixUniform  = gl.getUniformLocation(glProgram, "projMatrix");
@@ -546,6 +398,11 @@
             function initUniformsSolido(glProgram){
                 initUniforms(glProgram);
                 glProgram.colorUniform = gl.getUniformLocation(glProgram, "color");
+            }   
+
+            function initUniformsTexturado(glProgram){
+                initUniforms(glProgram);
+                glProgram.samplerUniform = gl.getUniformLocation(glProgram, "textura");
             }   
 
             function makeShader(src, type){
@@ -560,43 +417,42 @@
                 return shader;
             }
 
-            function initTexture(file){
+            async function init() {
+                if (initWebGL()) {
+                    texturas.maderaPiso = await initTexture("WoodenPlanks04_MR_1K/WoodenPlanks04_1K_BaseColor.png");
+                    texturas.maderaPoste = await initTexture("WoodenPlanks03_MR_1K/WoodenPlanks03_1K_BaseColor.png");
+                    texturas.metalOxidado = await initTexture("PaintedMetal02_MR_1K/PaintedMetal02_1K_BaseColor.png");
+                    texturas.cemento = await initTexture("Dirt03_MR_1K/Dirt03_1K_BaseColor.png");
+                    texturas.ascensores = await initTexture("WhiteStuccoWall01_MR_1K/WhiteStuccoWall01_1K_BaseColor.png");
+                    texturas.baseEdificio = await initTexture("StoneWall02_MR_1K/StoneWall02_1K_BaseColor.png");
+                    texturas.columna = await initTexture("StuccoWall01_MR_1K/StuccoWall01_1K_BaseColor.png");
+                    texturas.marco = await initTexture("BrushedGold02_MR_1K/BrushedGold02_1K_BaseColor.png");
+                    initApp();
+                }
+            }
+
+            async function initTexture(file){
 
                 var texture = gl.createTexture();
                 texture.image = new Image();
 
-                //textures.push(texture);
+                return new Promise((resolve, reject) => {
+                    texture.image.onload = async () => {
+                        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 					// invierto el ejeY					
+                        gl.bindTexture(gl.TEXTURE_2D, texture); 						// activo la textura
 
-                texture.image.onload = function () {
+                        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);	// cargo el bitmap en la GPU
 
-                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 					// invierto el ejeY					
-                gl.bindTexture(gl.TEXTURE_2D, texture); 						// activo la textura
+                        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);					// selecciono filtro de magnificacion
+                        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);	// selecciono filtro de minificacion
 
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);	// cargo el bitmap en la GPU
+                        gl.generateMipmap(gl.TEXTURE_2D);		// genero los mipmaps
+                        gl.bindTexture(gl.TEXTURE_2D, null);
 
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);					// selecciono filtro de magnificacion
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);	// selecciono filtro de minificacion
-
-                gl.generateMipmap(gl.TEXTURE_2D);		// genero los mipmaps
-                gl.bindTexture(gl.TEXTURE_2D, null);
-
-                totalTexturas--;
-                if (totalTexturas==0) initFase2();
-                }
-                texture.image.src = file;
-            }
-
-            function initFase2(){
-                setupWebGL();
-                initShaders();
-                setupBuffers();	
-
-                var gui = new dat.GUI();				
-                gui.add(window,"scale1",0.1,3).step(0.01);
-                gui.add(window,"low",-1,1).step(0.01);
-                gui.add(window,"high",-1,1).step(0.01);
-                
-                drawScene();    
+                        resolve(texture);
+                    };
+                    texture.image.src = "texturas/" + file;
+                });
             }
 
             function setupUniforms(modelMatrix, glProgram){
@@ -615,10 +471,15 @@
 
             function setupUniformsSolido(modelMatrix, glProgram, color){
                 setupUniforms(modelMatrix, glProgram);
-
-                glProgram.colorUniform = gl.getUniformLocation(glProgram, "color");
-
                 gl.uniform3fv(glProgram.colorUniform, color);
+            }   
+
+            function setupUniformsTexturado(modelMatrix, glProgram, textura){
+                setupUniforms(modelMatrix, glProgram);
+
+                gl.activeTexture(gl.TEXTURE0);
+				gl.bindTexture(gl.TEXTURE_2D, textura);
+                gl.uniform1i(glProgram.samplerUniform, 0);
             }   
 
             function drawMalla(mallaDeTriangulos, glProgram) {
@@ -628,6 +489,9 @@
                 gl.bindBuffer(gl.ARRAY_BUFFER, mallaDeTriangulos.webgl_normal_buffer);
                 gl.vertexAttribPointer(glProgram.vertexNormalAttribute, mallaDeTriangulos.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
                 
+                gl.bindBuffer(gl.ARRAY_BUFFER, mallaDeTriangulos.webgl_uvs_buffer);
+                gl.vertexAttribPointer(glProgram.vertexUvAttribute, mallaDeTriangulos.webgl_uvs_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mallaDeTriangulos.webgl_index_buffer);
 
                 gl.uniform1i(glProgram.useLightingUniform,true);                    
@@ -665,7 +529,7 @@
                 gui.add(menu, 'onMenuClick').name("Actualizar");
             }
 
-            window.onload=initWebGL;
+            window.onload=init;
 
         </script>
 

@@ -36,11 +36,10 @@ class Edificio {
 
         let cabezalBase = new CabezalBaseEdificio(5, 7, 2);
         let trayectoriaBase = new TrayectoriaRecta(this.alturaBase);
-        this.base = new Extrusor(cabezalBase, trayectoriaBase, false);
+        this.base = new Extrusor(cabezalBase, trayectoriaBase, false, texturaRepetida);
 
-        this.colorAscensores = [0.4, 0.3, 0.3];
         this.altoAscensores = (this.ventanaLado + this.alturaLosa) * (this.pisosTotales + 1);
-        this.ascensores = new Cuboide(3, 7, this.altoAscensores, true);
+        this.ascensores = new Cuboide(3, 7, this.altoAscensores, true, texturaAjustadaXRepetidaY, texturaAjustada);
 
         this.pisos = this.crearPisosGrandes();
         this.losa = this.crearLosa(this.verticesLosa);
@@ -95,7 +94,7 @@ class Edificio {
     crearLosa(verticesLosa) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaAjustada);
     }
 
     crearPisosGrandes() {
@@ -156,7 +155,7 @@ class Edificio {
 
         let modelMatrixAscensores = mat4.create();
         mat4.translate(modelMatrixAscensores, modelMatrixBase,
-                [0, 0, 0]);
+                [0, 0.1, 0]);
         this.ascensores.setModelMatrix(modelMatrixAscensores);
 
         let modelMatrixUltimoPiso = undefined;
@@ -190,12 +189,12 @@ class Edificio {
         this.pisos.forEach((piso, i) => {
             piso.draw(drawMalla);
         });
-        this.ascensores.draw(drawMalla, this.colorAscensores);
-        this.losa.draw(drawMalla, this.pisos[0].colorLosa);
+        this.ascensores.drawTexturado(drawMalla, texturas.ascensores);
+        this.losa.drawTexturado(drawMalla, texturas.cemento);
         this.pisosChicos.forEach((piso, i) => {
             piso.draw(drawMalla);
         });
-        this.base.draw(drawMalla, this.colorBase);
+        this.base.drawTexturado(drawMalla, texturas.baseEdificio);
     }
  
     keyEvent(event) {
