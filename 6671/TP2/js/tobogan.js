@@ -4,7 +4,6 @@ class Tobogan {
         this.diametro = diametro;
         this.colorSemiarco = [0.9, 0.3, 0.1];
         this.alturaNivel = 2.15;
-        this.colorColumna = [0.1, 0.1, 0.2];
 
         this.reset(niveles);
     }
@@ -16,8 +15,8 @@ class Tobogan {
         if (this.semiarcos.length > 0) {
             let cabezalColumna = new CabezalCilindro(0.8);
             let trayectoriaColumna = new TrayectoriaRecta(this.alturaColumna);
-            this.columnaA = new Extrusor(cabezalColumna, trayectoriaColumna, true);
-            this.columnaB = new Extrusor(cabezalColumna, trayectoriaColumna, true);
+            this.columnaA = new Extrusor(cabezalColumna, trayectoriaColumna, true, texturaAjustadaXRepetidaY, texturaRepetida);
+            this.columnaB = new Extrusor(cabezalColumna, trayectoriaColumna, true, texturaAjustadaXRepetidaY, texturaRepetida);
         }
         this.posicion = [...edificio.posicion];
         this.posicion[2] += this.edificio.getToboganZ();
@@ -64,19 +63,19 @@ class Tobogan {
         this.modificada = false;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, vista) {
+    draw(drawMalla, vista) {
         if (this.modificada) {
             this.actualizar();
             vista();
         }
 
         this.semiarcos.forEach(s => {
-            s.draw(setupVertexShaderMatrix, drawMalla, this.colorSemiarco);
+            s.drawSolido(drawMalla, this.colorSemiarco);
         });
 
         if (this.semiarcos.length > 0) {
-            this.columnaA.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-            this.columnaB.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
+            this.columnaA.drawTexturado(drawMalla, texturas.maderaPoste);
+            this.columnaB.drawTexturado(drawMalla, texturas.maderaPoste);
         }
     }
 }

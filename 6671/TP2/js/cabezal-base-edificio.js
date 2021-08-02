@@ -5,8 +5,8 @@ class CabezalBaseEdificio extends Cabezal {
                          [-ancho, largo],
 
                          [-puerta/2, largo],
-                         [-puerta/2, -largo*0.99],
-                         [puerta/2, -largo*0.99],
+                         [-puerta/2, -largo*0.9],
+                         [puerta/2, -largo*0.9],
                          [puerta/2, largo],
                          
                          [ancho, largo],
@@ -36,6 +36,8 @@ class CabezalBaseEdificio extends Cabezal {
             n.push(this.normales[i]);
         }
         this.normales = n;
+
+        this.calcularMedidas();
     }
 
     getCentro() {

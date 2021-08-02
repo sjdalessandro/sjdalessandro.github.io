@@ -13,13 +13,10 @@ class Grua {
         this.anguloCabina = 23*Math.PI/32;
         this.largoSoga = 3;
         this.largoSogaExtra = 3;
-        this.colorColumna = [0.7, 0.7, 0.0];
-        this.colorColumnaC = [0.3, 0.3, 0.5];
         this.colorEje = [0.3, 0.3, 0.3];
-        this.colorBrazo = this.colorColumna;
         this.colorSoga = [0.3, 0.1, 0.0];
-        this.colorPlataforma = [0.4, 0.2, 0.0];
         this.colorContrapeso = [0.5, 0.5, 0.5];
+        this.colorPiston = [0.3, 0.3, 0.5];
         this.getCamara = getCamara;
     
         this.extrusorCuboA = this.crearColumna(1.5);
@@ -33,7 +30,7 @@ class Grua {
 
         this.extrusorEjeE = this.crearEje(0.5);
 
-        this.brazo = new Cuboide(0.7, 0.7, this.largoBrazo, true);
+        this.brazo = new Cuboide(0.7, 0.7, this.largoBrazo, true, texturaAjustadaXRepetidaY, texturaAjustada);
 
         this.extrusorEjeG = this.crearEje(0.5);
 
@@ -46,7 +43,7 @@ class Grua {
         this.extrusorSogaC = new Extrusor(cabezalSoga, trayectoriaSogaExtra, true);
         this.extrusorSogaD = new Extrusor(cabezalSoga, trayectoriaSogaExtra, true);
 
-        this.plataforma = new Cuboide(3.3, 3.3, 0.05, true);
+        this.plataforma = new Cuboide(3.3, 3.3, 0.05, true, texturaAjustada, texturaAjustada);
 
         this.contrapeso = new Cuboide(4, 2, 2, true);
 
@@ -160,26 +157,26 @@ class Grua {
         return modelMatrixEje;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, vista) {
+    draw(drawMalla, vista) {
         if (this.modificada) {
             this.actualizar();
             vista();
         }
 
-        this.extrusorCuboA.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-        this.extrusorCuboB.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-        this.extrusorCuboC.draw(setupVertexShaderMatrix, drawMalla, this.colorColumnaC);
-        this.cabina.draw(setupVertexShaderMatrix, drawMalla, this.colorColumna);
-        this.extrusorEjeE.draw(setupVertexShaderMatrix, drawMalla, this.colorEje);
-        this.brazo.draw(setupVertexShaderMatrix, drawMalla, this.colorBrazo);
-        this.extrusorEjeG.draw(setupVertexShaderMatrix, drawMalla, this.colorEje);
-        this.extrusorSoga.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaA.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaB.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaC.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.extrusorSogaD.draw(setupVertexShaderMatrix, drawMalla, this.colorSoga);
-        this.plataforma.draw(setupVertexShaderMatrix, drawMalla, this.colorPlataforma);
-        this.contrapeso.draw(setupVertexShaderMatrix, drawMalla, this.colorContrapeso);
+        this.extrusorCuboA.drawTexturado(drawMalla, texturas.metalOxidado);
+        this.extrusorCuboB.drawTexturado(drawMalla, texturas.metalOxidado);
+        this.extrusorCuboC.drawSolido(drawMalla, this.colorPiston);
+        this.cabina.draw(drawMalla, texturas.metalOxidado);
+        this.extrusorEjeE.draw(drawMalla, this.colorEje);
+        this.brazo.drawTexturado(drawMalla, texturas.metalOxidado);
+        this.extrusorEjeG.draw(drawMalla, this.colorEje);
+        this.extrusorSoga.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaA.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaB.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaC.drawSolido(drawMalla, this.colorSoga);
+        this.extrusorSogaD.drawSolido(drawMalla, this.colorSoga);
+        this.plataforma.drawTexturado(drawMalla, texturas.maderaPiso);
+        this.contrapeso.drawSolido(drawMalla, this.colorContrapeso);
     }
     
     keyEvent(event) {

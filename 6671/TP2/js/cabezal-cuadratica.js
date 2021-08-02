@@ -31,22 +31,7 @@ class CabezalCuadratica extends Cabezal {
             this.normales = [...this.normales, ...normalesTramo];
         }
 
-        /*
-        // Con los extremos sobre la curva
-        let a = 4;
-        this.vertices = [];
-
-        this.base0 = function(u) { return (1-u)*(1-u); }
-        this.base1 = function(u) { return 2*u*(1-u); }
-        this.base2 = function(u) { return u*u; }
-
-        console.log("tramos: ", this.vertices.length - 2);
-
-        this.vertices = [...this.vertices, ...this.getVertices([[-a, 0], [-a, a], [0, a]])];
-        this.vertices = [...this.vertices, ...this.getVertices([[0, a], [a, a], [a, 0]])];
-        this.vertices = [...this.vertices, ...this.getVertices([[a, 0], [a, -a], [0, -a]])];
-        this.vertices = [...this.vertices, ...this.getVertices([[0, -a], [-a, -a], [-a, 0]])];
-        */
+        this.calcularMedidas();
     }
 
     getVertice(u) {
@@ -64,6 +49,7 @@ class CabezalCuadratica extends Cabezal {
         let pctrl = this.puntosDeControl.slice(t, t+3);
         let der = this.tangente(u - t*deltaU, pctrl);
         let normal = this.pcruz([0, 1, 0], [der[0], 0, der[1]]);
+        //let normal = this.pcruz([der[0], 0, der[1]], [0, 1, 0]);
         return this.normalize(normal);
     }
 
@@ -112,6 +98,7 @@ class CabezalCuadratica extends Cabezal {
             let tangente2D = this.tangente(u, puntosDeControl);
             let tangente = [tangente2D[0], 0, tangente2D[1]];
             let binormal = [0, 1, 0];
+            //let normal = this.pcruz(tangente, binormal);
             let normal = this.pcruz(binormal, tangente);
             puntos.push(this.normalize(normal));
         }

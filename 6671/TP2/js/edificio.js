@@ -34,13 +34,13 @@ class Edificio {
 
         this.verticesLosa = this.getVerticesLosa();
 
-        let cabezalBase = new CabezalBaseEdificio(5, 7, 2);
+        let cabezalBase = new CabezalBaseEdificio(this.ancho/2, this.largo/2, this.ancho/4);
         let trayectoriaBase = new TrayectoriaRecta(this.alturaBase);
-        this.base = new Extrusor(cabezalBase, trayectoriaBase, true);
+        this.base = new Extrusor(cabezalBase, trayectoriaBase, false, texturaRepetida);
+        this.entrada = new Cuboide(this.ancho/4, 0.5, this.alturaBase, true);
 
-        this.colorAscensores = [0.4, 0.3, 0.3];
         this.altoAscensores = (this.ventanaLado + this.alturaLosa) * (this.pisosTotales + 1);
-        this.ascensores = new Cuboide(3, 7, this.altoAscensores, true);
+        this.ascensores = new Cuboide(3, 7, this.altoAscensores, true, texturaAjustadaXRepetidaY, texturaAjustada);
 
         this.pisos = this.crearPisosGrandes();
         this.losa = this.crearLosa(this.verticesLosa);
@@ -95,7 +95,7 @@ class Edificio {
     crearLosa(verticesLosa) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaAjustada);
     }
 
     crearPisosGrandes() {
@@ -151,12 +151,16 @@ class Edificio {
 
         this.base.setModelMatrix(modelMatrixA);
 
+        let modelMatrixEntrada = mat4.create();
+        mat4.translate(modelMatrixEntrada, modelMatrixA, [0, 0, this.largo/2-1]);
+        this.entrada.setModelMatrix(modelMatrixEntrada);
+
         let modelMatrixBase = mat4.create();
         mat4.translate(modelMatrixBase, modelMatrixA, [0, this.alturaBase, 0]);
 
         let modelMatrixAscensores = mat4.create();
         mat4.translate(modelMatrixAscensores, modelMatrixBase,
-                [0, 0, 0]);
+                [0, 0.1, 0]);
         this.ascensores.setModelMatrix(modelMatrixAscensores);
 
         let modelMatrixUltimoPiso = undefined;
@@ -182,20 +186,21 @@ class Edificio {
         this.modificada = false;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla) {
+    draw(drawMalla) {
         if (this.modificada) {
             this.actualizar();
         }
 
         this.pisos.forEach((piso, i) => {
-            piso.draw(setupVertexShaderMatrix, drawMalla);
+            piso.draw(drawMalla);
         });
-        this.ascensores.draw(setupVertexShaderMatrix, drawMalla, this.colorAscensores);
-        this.losa.draw(setupVertexShaderMatrix, drawMalla, this.pisos[0].colorLosa);
+        this.ascensores.drawTexturado(drawMalla, texturas.ascensores);
+        this.losa.drawTexturado(drawMalla, texturas.cemento);
         this.pisosChicos.forEach((piso, i) => {
-            piso.draw(setupVertexShaderMatrix, drawMalla);
+            piso.draw(drawMalla);
         });
-        this.base.draw(setupVertexShaderMatrix, drawMalla, this.colorBase);
+        this.base.drawTexturado(drawMalla, texturas.baseEdificio);
+        this.entrada.draw(drawMalla);
     }
  
     keyEvent(event) {

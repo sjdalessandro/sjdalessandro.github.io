@@ -1,10 +1,12 @@
 class Extrusor {
-    constructor(cabezal, trayectoria, tapar) {
+    constructor(cabezal, trayectoria, tapar, tipoTextura, tipoTexturaEnTapa) {
         this.modelMatrix = mat4.create();
         mat4.identity(this.modelMatrix);
         this.cabezal = cabezal;
         this.trayectoria = trayectoria;
         this.tapar = tapar;
+        this.tipoTextura = tipoTextura;
+        this.tipoTexturaEnTapa = tipoTexturaEnTapa;
         this.columnas = cabezal.getVerticesLength();
         this.filas = trayectoria.getMatricesLength() - 1;
         this.malla = undefined;
@@ -21,7 +23,8 @@ class Extrusor {
 
     getNormal(u, v) {
 
-        let normal = this.cabezal.getNormal(u);
+        let normal2D = this.cabezal.getNormal(u);
+        let normal = this.trayectoria.getNormal(normal2D, v);
         return normal;
     }
 
@@ -43,17 +46,16 @@ class Extrusor {
             positionBuffer.push(pos[1]);
             positionBuffer.push(pos[2]);
 
-            // TODO implementar
-            // var nrm=this.cabezal.getNormal(u,v);
             var nrm=[0, n, 0];
 
             normalBuffer.push(nrm[0]);
             normalBuffer.push(nrm[1]);
             normalBuffer.push(nrm[2]);
 
-            // TODO implementar
-            // var uvs=this.cabezal.getCoordenadasTextura(u,v);
-            var uvs=[u, v];
+            var uvs = [pos[0], pos[2]];
+            if (this.tipoTexturaEnTapa == texturaAjustada) {
+                uvs = this.cabezal.escalarATextura(uvs);
+            }
 
             uvBuffer.push(uvs[0]);
             uvBuffer.push(uvs[1]);
@@ -72,18 +74,16 @@ class Extrusor {
             positionBuffer.push(pos[1]);
             positionBuffer.push(pos[2]);
 
-            // TODO implementar
-            // var nrm=this.cabezal.getNormal(u,v);
-            //var nrm=[0, v, 0];
             var nrm=[0, n, 0];
 
             normalBuffer.push(nrm[0]);
             normalBuffer.push(nrm[1]);
             normalBuffer.push(nrm[2]);
 
-            // TODO implementar
-            // var uvs=this.cabezal.getCoordenadasTextura(u,v);
-            var uvs=[u, v];
+            var uvs = [pos[0], pos[2]];
+            if (this.tipoTexturaEnTapa == texturaAjustada) {
+                uvs = this.cabezal.escalarATextura(uvs);
+            }
 
             uvBuffer.push(uvs[0]);
             uvBuffer.push(uvs[1]);
@@ -123,19 +123,27 @@ class Extrusor {
                 positionBuffer.push(pos[1]);
                 positionBuffer.push(pos[2]);
     
-                // TODO implementar
-                // var nrm=this.cabezal.getNormal(u,v);
-                //var nrm=[0, v, 0];
                 var nrm = this.getNormal(u,v);
     
                 normalBuffer.push(nrm[0]);
                 normalBuffer.push(nrm[1]);
                 normalBuffer.push(nrm[2]);
     
-                // TODO implementar
-                // var uvs=this.cabezal.getCoordenadasTextura(u,v);
-                var uvs=[u, v];
-    
+                var uvs = [];
+                if (this.tipoTextura == texturaAjustadaXRepetidaY) {
+                    let x = this.cabezal.getCoordenadaTextura(u);
+                    let y = this.trayectoria.getCoordenadaTexturaRepetida(v, this.cabezal.acc);
+                    uvs = [x, y];
+                } else if (this.tipoTextura == texturaRepetida) {
+                    let x = this.cabezal.getCoordenadaTexturaRepetida(u);
+                    let y = this.trayectoria.getCoordenadaTexturaRepetida(v, 1);
+                    uvs = [x, y];
+                } else {
+                    let x = this.cabezal.getCoordenadaTextura(u);
+                    let y = this.trayectoria.getCoordenadaTextura(v);
+                    uvs = [x, y];
+                }
+
                 uvBuffer.push(uvs[0]);
                 uvBuffer.push(uvs[1]);
     
@@ -223,8 +231,18 @@ class Extrusor {
         this.modelMatrix = modelMatrix;
     }
 
-    draw(setupVertexShaderMatrix, drawMalla, color) {
-        setupVertexShaderMatrix(this.getModelMatrix(), color);
-        drawMalla(this.getMalla());
+    drawTexturado(drawMalla, textura) {
+        glPrograms.texturado.setup(this.getModelMatrix(), glPrograms.texturado, textura);
+        drawMalla(this.getMalla(), glPrograms.texturado);
+    }
+
+    drawSolido(drawMalla, color) {
+        glPrograms.solido.setup(this.getModelMatrix(), glPrograms.solido, color);
+        drawMalla(this.getMalla(), glPrograms.solido);
+    }
+
+    draw(drawMalla) {
+        glPrograms.incorrecto.setup(this.getModelMatrix(), glPrograms.incorrecto);
+        drawMalla(this.getMalla(), glPrograms.incorrecto);
     }
 }

@@ -11,6 +11,7 @@ class TrayectoriaBezierCuadratica extends Trayectoria {
             this.matrices.push(matriz);
             y += 0.018;
         });
+        this.calcularMedidas();
     }
     
     getPosicion(pos2D, v) {

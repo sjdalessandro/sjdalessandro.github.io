@@ -9,5 +9,6 @@ class TrayectoriaRecta extends Trayectoria {
                           0, 1, 0, 0,
                           0, 0, 1, 0,
                           0, longitud, 0, 1]];
+        this.calcularMedidas();
     }
 }
