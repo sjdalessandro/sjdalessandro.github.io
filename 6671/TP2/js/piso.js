@@ -16,7 +16,6 @@ class Piso {
         this.ventanaEspesor = 0.05;
         this.ancho = this.ventanasAncho * this.ventanaLado;
         this.largo = this.ventanasLargo * this.ventanaLado;
-        this.colorVentana = [0, 0.3, 0.8];
 
         this.alturaLosa = 0.3;
 
@@ -186,10 +185,10 @@ class Piso {
         }
 
         this.losa.drawTexturado(drawMalla, texturas.cemento);
-        this.ventanalA.draw(drawMalla, this.colorVentana);
-        this.ventanalB.draw(drawMalla, this.colorVentana);
-        this.ventanalC.draw(drawMalla, this.colorVentana);
-        this.ventanalD.draw(drawMalla, this.colorVentana);
+        this.ventanalA.drawVidrio(drawMalla);
+        this.ventanalB.drawVidrio(drawMalla);
+        this.ventanalC.drawVidrio(drawMalla);
+        this.ventanalD.drawVidrio(drawMalla);
         this.marcos.forEach(marco => {
             marco.drawTexturado(drawMalla, texturas.marco);
         });

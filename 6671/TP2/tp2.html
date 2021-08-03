@@ -31,6 +31,7 @@
         <script type="text/javascript" src="js/trayectoria-recta.js"></script>
         <script type="text/javascript" src="js/trayectoria-bezier-cuadratica.js"></script>
         <script type="text/javascript" src="js/trayectoria-tobogan.js"></script>
+        <script type="text/javascript" src="js/cielo.js"></script>
         <script type="text/javascript" src="js/grua.js"></script>
         <script type="text/javascript" src="js/cabina.js"></script>
         <script type="text/javascript" src="js/cabezal-rectangulo.js"></script>
@@ -55,6 +56,12 @@
         <script src="shaders/incorrecto-vertex.glsl"></script>
         <script src="shaders/incorrecto-fragment.glsl"></script>
 
+        <script src="shaders/cielo-vertex.glsl"></script>
+        <script src="shaders/cielo-fragment.glsl"></script>
+
+        <script src="shaders/vidrio-vertex.glsl"></script>
+        <script src="shaders/vidrio-fragment.glsl"></script>
+
         <script>
             var mat3=glMatrix.mat3;
             var mat4=glMatrix.mat4;
@@ -76,6 +83,7 @@
             var edificio = null;
             var tierra = null;
             var tobogan = null;
+            var cielo = null;
 
             var colorTierra = [0.0, 0.5, 0.2];
             var colorCielo = [0.0, 0.2, 0.6];
@@ -203,6 +211,7 @@
                 resizeEvent();
                 setupWebGL();
                 initShaders();
+                cielo = new Cielo();
                 tick();   
             }
 
@@ -355,6 +364,14 @@
                 glPrograms.texturado = initShader(texturadoFragmentShader, texturadoVertexShader);
                 glPrograms.texturado.setup = setupUniformsTexturado;
                 initUniformsTexturado(glPrograms.texturado);
+
+                glPrograms.cielo = initShader(cieloFragmentShader, cieloVertexShader);
+                glPrograms.cielo.setup = setupUniformsCielo;
+                initUniformsCielo(glPrograms.cielo);
+
+                glPrograms.vidrio = initShader(vidrioFragmentShader, vidrioVertexShader);
+                glPrograms.vidrio.setup = setupUniformsVidrio;
+                initUniformsVidrio(glPrograms.vidrio);
             }
 
             function initShader(fs_source, vs_source) {
@@ -381,7 +398,7 @@
             function initUniforms(glProgram){
                 glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
                 gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
-        
+
                 glProgram.vertexNormalAttribute = gl.getAttribLocation(glProgram, "aVertexNormal");
                 gl.enableVertexAttribArray(glProgram.vertexNormalAttribute);
 
@@ -403,6 +420,19 @@
             function initUniformsTexturado(glProgram){
                 initUniforms(glProgram);
                 glProgram.samplerUniform = gl.getUniformLocation(glProgram, "textura");
+            }   
+
+            function initUniformsCielo(glProgram){
+                glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
+                gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
+
+                glProgram.skyboxUniform = gl.getUniformLocation(glProgram, "uSkybox");
+                glProgram.viewInverseUniform = gl.getUniformLocation(glProgram, "viewMatrixInverse");
+            }   
+
+            function initUniformsVidrio(glProgram){
+                initUniforms(glProgram);
+                glProgram.skyboxUniform = gl.getUniformLocation(glProgram, "uSkybox");
             }   
 
             function makeShader(src, type){
@@ -482,6 +512,31 @@
                 gl.uniform1i(glProgram.samplerUniform, 0);
             }   
 
+            function setupUniformsVidrio(modelMatrix, glProgram){
+                setupUniforms(modelMatrix, glProgram);
+            }   
+
+            function setupUniformsCielo(glProgram){
+                gl.useProgram(glProgram);
+
+                var viewMatrixInverse = mat4.clone(viewMatrix);
+                viewMatrixInverse[12] = 0;
+                viewMatrixInverse[13] = 0;
+                viewMatrixInverse[14] = 0;
+
+                mat4.multiply(viewMatrixInverse, projMatrix, viewMatrixInverse);
+                mat4.invert(viewMatrixInverse, viewMatrixInverse);
+
+                // Set the uniforms
+                gl.uniformMatrix4fv(glProgram.viewInverseUniform, false, viewMatrixInverse);
+
+                // Tell the shader to use texture unit 0 for u_skybox
+                gl.uniform1i(glProgram.skyboxUniform, 0);
+
+                // let our quad pass the depth test at 1.0
+                gl.depthFunc(gl.LEQUAL);
+            }   
+
             function drawMalla(mallaDeTriangulos, glProgram) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, mallaDeTriangulos.webgl_position_buffer);
                 gl.vertexAttribPointer(glProgram.vertexPositionAttribute, mallaDeTriangulos.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -506,6 +561,7 @@
                 gl.clearColor(0.6, 0.8, 0.9, 1.0);     
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     
 
+                cielo.draw();
                 tierra.draw(drawMalla, colorTierra);
                 grua.draw(drawMalla, vista);
                 edificio.draw(drawMalla);

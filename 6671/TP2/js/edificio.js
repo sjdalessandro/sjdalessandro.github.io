@@ -200,7 +200,7 @@ class Edificio {
             piso.draw(drawMalla);
         });
         this.base.drawTexturado(drawMalla, texturas.baseEdificio);
-        this.entrada.draw(drawMalla);
+        this.entrada.drawVidrio(drawMalla);
     }
  
     keyEvent(event) {

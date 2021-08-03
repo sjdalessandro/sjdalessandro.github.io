@@ -241,6 +241,11 @@ class Extrusor {
         drawMalla(this.getMalla(), glPrograms.solido);
     }
 
+    drawVidrio(drawMalla) {
+        glPrograms.vidrio.setup(this.getModelMatrix(), glPrograms.vidrio);
+        drawMalla(this.getMalla(), glPrograms.vidrio);
+    }
+
     draw(drawMalla) {
         glPrograms.incorrecto.setup(this.getModelMatrix(), glPrograms.incorrecto);
         drawMalla(this.getMalla(), glPrograms.incorrecto);
