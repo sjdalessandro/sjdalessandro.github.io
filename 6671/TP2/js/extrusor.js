@@ -231,6 +231,11 @@ class Extrusor {
         this.modelMatrix = modelMatrix;
     }
 
+    drawTierra(drawMalla, textura0, textura1, textura2) {
+        glPrograms.tierra.setup(this.getModelMatrix(), glPrograms.tierra, textura0, textura1, textura2);
+        drawMalla(this.getMalla(), glPrograms.tierra);
+    }
+
     drawTexturado(drawMalla, textura) {
         glPrograms.texturado.setup(this.getModelMatrix(), glPrograms.texturado, textura);
         drawMalla(this.getMalla(), glPrograms.texturado);

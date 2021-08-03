@@ -62,6 +62,8 @@
         <script src="shaders/vidrio-vertex.glsl"></script>
         <script src="shaders/vidrio-fragment.glsl"></script>
 
+        <script src="shaders/tierra-fragment.glsl"></script>
+
         <script>
             var mat3=glMatrix.mat3;
             var mat4=glMatrix.mat4;
@@ -199,7 +201,7 @@
                     menu.pisosTramo2,
                     menu.columnas
                 );
-                tierra = new Cuboide(ladoTierra, ladoTierra, 1, true);
+                tierra = new Cuboide(ladoTierra, ladoTierra, 1, true, texturaRepetida, texturaRepetida);
                 let diametroTobogan = 0.8;
                 tobogan = new Tobogan(edificio, diametroTobogan, 6);
 
@@ -372,6 +374,10 @@
                 glPrograms.vidrio = initShader(vidrioFragmentShader, vidrioVertexShader);
                 glPrograms.vidrio.setup = setupUniformsVidrio;
                 initUniformsVidrio(glPrograms.vidrio);
+
+                glPrograms.tierra = initShader(tierraFragmentShader, solidoVertexShader);
+                glPrograms.tierra.setup = setupUniformsTierra;
+                initUniformsTierra(glPrograms.tierra);
             }
 
             function initShader(fs_source, vs_source) {
@@ -435,6 +441,16 @@
                 glProgram.skyboxUniform = gl.getUniformLocation(glProgram, "uSkybox");
             }   
 
+            function initUniformsTierra(glProgram){
+                initUniforms(glProgram);
+                glProgram.scaleUniform = gl.getUniformLocation(glProgram, "scale1");
+                glProgram.lowUniform = gl.getUniformLocation(glProgram, "low");
+                glProgram.highUniform = gl.getUniformLocation(glProgram, "high");
+                glProgram.sampler0Uniform = gl.getUniformLocation(glProgram, "uSampler0");
+                glProgram.sampler1Uniform = gl.getUniformLocation(glProgram, "uSampler1");
+                glProgram.sampler2Uniform = gl.getUniformLocation(glProgram, "uSampler2");
+            }   
+
             function makeShader(src, type){
                 //compile the vertex shader
                 var shader = gl.createShader(type);
@@ -457,6 +473,9 @@
                     texturas.baseEdificio = await initTexture("StoneWall02_MR_1K/StoneWall02_1K_BaseColor.png");
                     texturas.columna = await initTexture("StuccoWall01_MR_1K/StuccoWall01_1K_BaseColor.png");
                     texturas.marco = await initTexture("BrushedGold02_MR_1K/BrushedGold02_1K_BaseColor.png");
+                    texturas.tierra0 = await initTexture("WhiteGravel01_MR_1K/WhiteGravel01_1K_BaseColor.png");
+                    texturas.tierra1 = await initTexture("roca.jpg");
+                    texturas.tierra2 = await initTexture("pasto.jpg");
                     initApp();
                 }
             }
@@ -537,6 +556,25 @@
                 gl.depthFunc(gl.LEQUAL);
             }   
 
+            function setupUniformsTierra(modelMatrix, glProgram, textura0, textura1, textura2){
+                setupUniforms(modelMatrix, glProgram);
+                gl.uniform1fv(glProgram.scaleUniform, [0.003]);
+                gl.uniform1fv(glProgram.lowUniform, [-0.5]);
+                gl.uniform1fv(glProgram.highUniform, [0.5]);
+
+                gl.activeTexture(gl.TEXTURE0);
+				gl.bindTexture(gl.TEXTURE_2D, textura0);
+                gl.uniform1i(glProgram.sampler0Uniform, 0);
+
+                gl.activeTexture(gl.TEXTURE1);
+				gl.bindTexture(gl.TEXTURE_2D, textura1);
+                gl.uniform1i(glProgram.sampler1Uniform, 1);
+
+                gl.activeTexture(gl.TEXTURE2);
+				gl.bindTexture(gl.TEXTURE_2D, textura2);
+                gl.uniform1i(glProgram.sampler2Uniform, 2);
+            }
+
             function drawMalla(mallaDeTriangulos, glProgram) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, mallaDeTriangulos.webgl_position_buffer);
                 gl.vertexAttribPointer(glProgram.vertexPositionAttribute, mallaDeTriangulos.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -562,7 +600,7 @@
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     
 
                 cielo.draw();
-                tierra.draw(drawMalla, colorTierra);
+                tierra.drawTierra(drawMalla, texturas.tierra0, texturas.tierra1, texturas.tierra2);
                 grua.draw(drawMalla, vista);
                 edificio.draw(drawMalla);
                 tobogan.draw(drawMalla);
