@@ -54,8 +54,8 @@ class Edificio {
     }
 
     getVerticesLosa() {
-        const stepY = this.largo/5;
-        const stepX = this.ancho/3;
+        const stepY = this.largo/(this.ventanasLargo/2);
+        const stepX = this.ancho/(this.ventanasAncho/2);
         const d = this.ancho/4;
         const x0 = -this.ancho/2 - d;
         const xf = this.ancho/2 + d;

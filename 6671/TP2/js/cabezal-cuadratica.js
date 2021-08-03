@@ -5,7 +5,7 @@ class CabezalCuadratica extends Cabezal {
         super();
         this.initialize();
 
-        this.step = 0.05;
+        this.step = 0.1;
 
         // Cierro la curva
         if (!abierta) {
@@ -35,21 +35,20 @@ class CabezalCuadratica extends Cabezal {
     }
 
     getVertice(u) {
-        u %= 1;
-        let t = u * this.tramos;
         let deltaU = 1/this.tramos;
+        let t = Math.floor((u%1) / deltaU);
         let pctrl = this.puntosDeControl.slice(t, t+3);
-        return this.curva(u - t*deltaU, pctrl);
+        u = (u - t*deltaU)/deltaU;
+        return this.curva(u, pctrl);
     }
     
     getNormal(u) {
-        u %= 1;
-        let t = u * this.tramos;
         let deltaU = 1/this.tramos;
+        let t = Math.floor((u%1) / deltaU);
         let pctrl = this.puntosDeControl.slice(t, t+3);
-        let der = this.tangente(u - t*deltaU, pctrl);
+        u = (u - t*deltaU)/deltaU;
+        let der = this.tangente(u, pctrl);
         let normal = this.pcruz([0, 1, 0], [der[0], 0, der[1]]);
-        //let normal = this.pcruz([der[0], 0, der[1]], [0, 1, 0]);
         return this.normalize(normal);
     }
 

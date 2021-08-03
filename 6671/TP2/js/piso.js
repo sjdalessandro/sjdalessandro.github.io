@@ -106,12 +106,13 @@ class Piso {
         this.columnas.forEach((columna, i) => {
             let modelMatrixColumna = mat4.create();
             let u = i/this.columnasLen;
+
             let ver = this.losa.cabezal.getVertice(u);
             let normal = this.losa.cabezal.getNormal(u);
             const f = 1;
             let pos = [ver[0] - f*normal[0], ver[1] - f*normal[2]];
             mat4.translate(modelMatrixColumna, modelMatrixA,
-                    [0 + pos[0], desplazamientoInicial, 0 + pos[1]]);
+                    [pos[0], desplazamientoInicial, pos[1]]);
             columna.setModelMatrix(modelMatrixColumna);
         });
 
