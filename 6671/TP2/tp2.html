@@ -283,24 +283,24 @@
                 let key = event.keyCode || event.which;
                 let keychar = String.fromCharCode(key);
                 const camradpaso = 0.25;
-                if (keychar == "1") {
+                if (keychar == "Z") {
                     camara = camaraOrbital;
                     vista();
-                } else if (keychar == "2") {
+                } else if (keychar == "X") {
                     camara = camaraDrone;
                     vista();
-                } else if (keychar == "3") {
+                } else if (keychar == "C") {
                     camara = camaraGrua;
                     vista();
                 }
 
                 if (camara == camaraOrbital) {
-                    if (keychar == "E") {
+                    if (keychar == "W") {
                         if (radioCamara > 1) {
                             radioCamara -= camradpaso;
                         }
                         vistaOrbital();
-                    } else if (keychar == "D") {
+                    } else if (keychar == "S") {
                         radioCamara += camradpaso;
                         vistaOrbital();
                     }

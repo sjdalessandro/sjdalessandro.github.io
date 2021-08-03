@@ -38,10 +38,6 @@ class Piso {
         this.columnas = this.crearColumnas();
 
         this.actualizar();
-
-        window.addEventListener("keydown", event => {
-            this.keyEvent(event);
-        }, false);
     }
 
     desplazar(vertices, min, max) {
@@ -196,11 +192,5 @@ class Piso {
         this.columnas.forEach(columna => {
            columna.drawTexturado(drawMalla, texturas.columna);
         });
-    }
-    
-    keyEvent(event) {
-        let key = event.keyCode || event.which;
-        let keychar = String.fromCharCode(key);
-        // if (keychar == "Q") {}
     }
 }

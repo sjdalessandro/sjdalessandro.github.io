@@ -14,10 +14,6 @@ class Edificio {
         this.colorBase = [0.4, 0.25, 0.25];
 
         this.reset(ventanasLargo, ventanasAncho, pisosGrandes, pisosChicos, columnasLen);
-
-        window.addEventListener("keydown", event => {
-            this.keyEvent(event);
-        }, false);
     }
 
     reset(ventanasLargo, ventanasAncho, pisosGrandes, pisosChicos, columnasLen) {
@@ -201,11 +197,5 @@ class Edificio {
         });
         this.base.drawTexturado(drawMalla, texturas.baseEdificio);
         this.entrada.drawTexturado(drawMalla, texturas.maderaEntrada);
-    }
- 
-    keyEvent(event) {
-        let key = event.keyCode || event.which;
-        let keychar = String.fromCharCode(key);
-        // if (keychar == "Q") {}
     }
 }

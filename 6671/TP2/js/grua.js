@@ -180,12 +180,9 @@ class Grua {
     }
     
     keyEvent(event) {
-        if (this.getCamara() == camaraDrone) {
-            return;
-        }
         let key = event.keyCode || event.which;
         let keychar = String.fromCharCode(key);
-        if (keychar == "Q") {
+        if (keychar == "I") {
             if (this.elevacionSegmentoColumna1 < this.alturaSegmentoColumna) {
                 this.elevacionSegmentoColumna1 += 0.15;
                 this.modificada = true;
@@ -199,7 +196,7 @@ class Grua {
                     this.modificada = true;
                 }
             }
-        } else if (keychar == "A") {
+        } else if (keychar == "K") {
             if (this.elevacionSegmentoColumna2 > 0) {
                 this.elevacionSegmentoColumna2 -= 0.05;
                 this.modificada = true;
@@ -217,30 +214,30 @@ class Grua {
                 }
             }
         }
-        if (keychar == "W") {
+        if (keychar == "O") {
             if (this.largoSoga > 1) {
                 this.largoSoga -= 0.1;
                 this.modificada = true;
             }
-        } else if (keychar == "S") {
+        } else if (keychar == "L") {
             this.largoSoga += 0.1;
             this.modificada = true;
         }
-        if (keychar == "I") {
+        if (keychar == "G") {
             if (this.anguloBrazo > -Math.PI/8) {
                 this.anguloBrazo -= 0.01;
                 this.modificada = true;
             }
-        } else if (keychar == "K") {
+        } else if (keychar == "B") {
             if (this.anguloBrazo < Math.PI/8) {
                 this.anguloBrazo += 0.01;
                 this.modificada = true;
             }
         }
-        if (keychar == "J") {
+        if (keychar == "V") {
             this.anguloCabina += 0.01;
             this.modificada = true;
-        } else if (keychar == "L") {
+        } else if (keychar == "N") {
             this.anguloCabina -= 0.01;
             this.modificada = true;
         }

@@ -1,0 +1,33 @@
+Grúa
+====
+
+V, N: Rotar cabina.
+G, B: Rotar brazo.
+I, K: Expandir/contraer columnas.
+O, L: Contraer/extender cable.
+
+Cámara orbital
+==============
+
+Z: Selecciona la cámara orbital.
+W, S: Acerca/aleja la cámara.
+
+Cámara drone
+============
+
+X: Selecciona la cámara drone.
+Flechas: Desplaza la cámara.
+A, D: Rota la cámara.
+W, S: Eleva/baja la cámara.
+Q: Restaura posición y ángulo inicial.
+E: Restaura ángulo inicial.
+
+Cámara grúa
+===========
+
+C: Selecciona la cámara grúa.
+
+Menú
+====
+
+H: Muestra/oculta el menú.
