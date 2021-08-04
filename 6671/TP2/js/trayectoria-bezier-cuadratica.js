@@ -9,7 +9,7 @@ class TrayectoriaBezierCuadratica extends Trayectoria {
             let tangente = this.cabezalBezierCuadratica.tangentes[i];
             let matriz = this.matrizDeNivel(normal, tangente, v[0], y, v[1]);
             this.matrices.push(matriz);
-            y += 0.018;
+            y += 0.03581;
         });
         this.calcularMedidas();
     }
