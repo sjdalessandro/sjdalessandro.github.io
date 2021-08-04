@@ -55,6 +55,17 @@ class Trayectoria {
         return this.normalize(vector);
     }
 
+    getTangente(tangente2D, v) {
+        let vector = [tangente2D[0], 0, tangente2D[2], 1];
+        let i = this.getIndiceMatriz(v);
+        let matriz = glMatrix.mat4.clone(this.matrices[i]);
+        matriz[12] = 0;
+        matriz[13] = 0;
+        matriz[14] = 0;
+        glMatrix.vec4.transformMat4(vector, vector, matriz);
+        return this.normalize(vector);
+    }
+
     getCentro(pos2D, v) {
         let vector = [pos2D[0], 0, pos2D[1], 1];
         let i = this.getIndiceMatriz(v);

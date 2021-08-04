@@ -2,6 +2,7 @@ class Cabezal {
     constructor() {
         this.vertices = undefined;
         this.normales = undefined;
+        this.tangentes = undefined;
     }
 
     calcularMedidas() {
@@ -55,6 +56,11 @@ class Cabezal {
     getNormal(u) {
         let i = this.getIndiceVertice(u);
         return this.normales[i];
+    }
+
+    getTangente(u) {
+        let i = this.getIndiceVertice(u);
+        return this.tangentes[i];
     }
 
     getCentro() {

@@ -63,10 +63,9 @@ class Tobogan {
         this.modificada = false;
     }
 
-    draw(drawMalla, vista) {
+    draw(drawMalla) {
         if (this.modificada) {
             this.actualizar();
-            vista();
         }
 
         this.semiarcos.forEach(s => {
@@ -76,6 +75,8 @@ class Tobogan {
         if (this.semiarcos.length > 0) {
             this.columnaA.drawTexturado(drawMalla, texturas.maderaPoste);
             this.columnaB.drawTexturado(drawMalla, texturas.maderaPoste);
+            //this.columnaA.drawWithNormalMap(drawMalla, texturas.maderaPoste, texturas.maderaPosteNormalMap);
+            //this.columnaB.drawWithNormalMap(drawMalla, texturas.maderaPoste, texturas.maderaPosteNormalMap);
         }
     }
 }

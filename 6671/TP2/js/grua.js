@@ -162,7 +162,6 @@ class Grua {
             this.actualizar();
             vista();
         }
-
         this.extrusorCuboA.drawTexturado(drawMalla, texturas.metalOxidado);
         this.extrusorCuboB.drawTexturado(drawMalla, texturas.metalOxidado);
         this.extrusorCuboC.drawSolido(drawMalla, this.colorPiston);
@@ -176,6 +175,7 @@ class Grua {
         this.extrusorSogaC.drawSolido(drawMalla, this.colorSoga);
         this.extrusorSogaD.drawSolido(drawMalla, this.colorSoga);
         this.plataforma.drawTexturado(drawMalla, texturas.maderaPiso);
+        //this.plataforma.drawWithNormalMap(drawMalla, texturas.maderaPoste, texturas.maderaPosteNormalMap);
         this.contrapeso.drawSolido(drawMalla, this.colorContrapeso);
     }
     

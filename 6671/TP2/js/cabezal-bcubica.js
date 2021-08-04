@@ -22,6 +22,7 @@ class CabezalBCubica extends Cabezal {
 
         this.vertices = [];
         this.normales = [];
+        this.tangentes = [];
         for (var t=0; t < tramos; t++){
             let pctrl = [puntosDeControl[t], puntosDeControl[t+1], puntosDeControl[t+2], puntosDeControl[t+3]];
             
@@ -30,6 +31,9 @@ class CabezalBCubica extends Cabezal {
 
             let normalesTramo = this.getNormales(pctrl);
             this.normales = [...this.normales, ...normalesTramo];
+
+            let tangentesTramo = this.getTangentes(pctrl);
+            this.tangentes = [...this.tangentes, ...tangentesTramo];
         }
     }
 
@@ -53,7 +57,7 @@ class CabezalBCubica extends Cabezal {
         return puntos;
     }
 
-    derivada(u, puntosDeControl) {
+    tangente(u, puntosDeControl) {
 		var p0 = puntosDeControl[0];
 		var p1 = puntosDeControl[1];
 		var p2 = puntosDeControl[2];
@@ -68,11 +72,20 @@ class CabezalBCubica extends Cabezal {
     getNormales(puntosDeControl) {
         let puntos = [];
 		for (var u=0; u <= 1.0; u += this.step){
-            let der = this.derivada(u, puntosDeControl);
+            let der = this.tangente(u, puntosDeControl);
             let normal = this.pcruz([der[0], 0, der[1]], [0, 1, 0]);
-            //let normal = this.pcruz([0, 1, 0], [der[0], 0, der[1]]);
  			puntos.push(this.normalize(normal));
         }
+        return puntos;
+    }
+
+    getTangentes(puntosDeControl) {
+        let puntos = [];
+		for (var u=0; u <= 1.0; u += this.step){
+            let tangente2D = this.tangente(u, puntosDeControl);
+            let tangente = [tangente2D[0], 0, tangente2D[1]];
+            puntos.push(this.normalize(tangente));
+         }
         return puntos;
     }
 }

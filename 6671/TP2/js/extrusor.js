@@ -28,6 +28,13 @@ class Extrusor {
         return normal;
     }
 
+    getTangente(u, v) {
+
+        let tangente2D = this.cabezal.getTangente(u);
+        let tangente = this.trayectoria.getTangente(tangente2D, v);
+        return tangente;
+    }
+
     getCentro(v) {
 
         let pos2D = this.cabezal.getCentro();
@@ -35,7 +42,7 @@ class Extrusor {
         return pos;
     }
 
-    agregarTapaCentro(v, n, positionBuffer, normalBuffer, uvBuffer) {
+    agregarTapaCentro(v, n, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
         var pos=this.getCentro(v);
 
         for (var j=0; j <= this.columnas; j++) {
@@ -46,6 +53,18 @@ class Extrusor {
             positionBuffer.push(pos[1]);
             positionBuffer.push(pos[2]);
 
+            //var tan=this.getTangente(u,v);
+            var tan;
+            if (v == 0) {
+                tan =[1, 0, 0];
+            } else {
+                tan =[0, 0, 1];
+            }
+
+            tangentBuffer.push(tan[0]);
+            tangentBuffer.push(tan[1]);
+            tangentBuffer.push(tan[2]);
+
             var nrm=[0, n, 0];
 
             normalBuffer.push(nrm[0]);
@@ -63,7 +82,7 @@ class Extrusor {
         }
     }
 
-    agregarTapaRepetido(v, n, positionBuffer, normalBuffer, uvBuffer) {
+    agregarTapaRepetido(v, n, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
         for (var j=0; j <= this.columnas; j++) {
     
             var u=j/this.columnas;
@@ -74,6 +93,18 @@ class Extrusor {
             positionBuffer.push(pos[1]);
             positionBuffer.push(pos[2]);
 
+            //var tan=this.getTangente(u,v);
+            var tan;
+            if (v == 0) {
+                tan =[1, 0, 0];
+            } else {
+                tan =[0, 0, 1];
+            }
+    
+            tangentBuffer.push(tan[0]);
+            tangentBuffer.push(tan[1]);
+            tangentBuffer.push(tan[2]);
+
             var nrm=[0, n, 0];
 
             normalBuffer.push(nrm[0]);
@@ -91,13 +122,13 @@ class Extrusor {
         }
     }
 
-    agregarTapa(v, positionBuffer, normalBuffer, uvBuffer) {
+    agregarTapa(v, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
         if (v == 1) {
-            this.agregarTapaRepetido(v, 1, positionBuffer, normalBuffer, uvBuffer);
-            this.agregarTapaCentro(v, 1, positionBuffer, normalBuffer, uvBuffer);
+            this.agregarTapaRepetido(v, 1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
+            this.agregarTapaCentro(v, 1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
         } else {
-            this.agregarTapaCentro(v, -1, positionBuffer, normalBuffer, uvBuffer);
-            this.agregarTapaRepetido(v, -1, positionBuffer, normalBuffer, uvBuffer);
+            this.agregarTapaCentro(v, -1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
+            this.agregarTapaRepetido(v, -1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
         }
     }
 
@@ -106,9 +137,10 @@ class Extrusor {
         let positionBuffer = [];
         let normalBuffer = [];
         let uvBuffer = [];
+        let tangentBuffer = [];
 
         if (this.tapar) {
-            this.agregarTapa(0, positionBuffer, normalBuffer, uvBuffer);
+            this.agregarTapa(0, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
         }
 
         for (var i=0; i <= this.filas; i++) {
@@ -122,6 +154,12 @@ class Extrusor {
                 positionBuffer.push(pos[0]);
                 positionBuffer.push(pos[1]);
                 positionBuffer.push(pos[2]);
+    
+                var tan=this.getTangente(u,v);
+    
+                tangentBuffer.push(tan[0]);
+                tangentBuffer.push(tan[1]);
+                tangentBuffer.push(tan[2]);
     
                 var nrm = this.getNormal(u,v);
     
@@ -152,7 +190,7 @@ class Extrusor {
 
         if (this.tapar) {
             if (this.tapar) {
-                this.agregarTapa(1, positionBuffer, normalBuffer, uvBuffer);
+                this.agregarTapa(1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
             }
             this.filas += 4;
         }
@@ -198,12 +236,17 @@ class Extrusor {
         webgl_normal_buffer.itemSize = 3;
         webgl_normal_buffer.numItems = normalBuffer.length / 3;
     
+        let webgl_tangent_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, webgl_tangent_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tangentBuffer), gl.STATIC_DRAW);
+        webgl_tangent_buffer.itemSize = 3;
+        webgl_tangent_buffer.numItems = tangentBuffer.length / 3;
+    
         let webgl_uvs_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, webgl_uvs_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvBuffer), gl.STATIC_DRAW);
         webgl_uvs_buffer.itemSize = 2;
         webgl_uvs_buffer.numItems = uvBuffer.length / 2;
-    
     
         let webgl_index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, webgl_index_buffer);
@@ -214,6 +257,7 @@ class Extrusor {
         this.malla = {
             webgl_position_buffer,
             webgl_normal_buffer,
+            webgl_tangent_buffer,
             webgl_uvs_buffer,
             webgl_index_buffer
         }
@@ -239,6 +283,11 @@ class Extrusor {
     drawTexturado(drawMalla, textura) {
         glPrograms.texturado.setup(this.getModelMatrix(), glPrograms.texturado, textura);
         drawMalla(this.getMalla(), glPrograms.texturado);
+    }
+
+    drawWithNormalMap(drawMalla, textura, normalMap) {
+        glPrograms.normalMap.setup(this.getModelMatrix(), glPrograms.normalMap, textura, normalMap);
+        drawMalla(this.getMalla(), glPrograms.normalMap, true);
     }
 
     drawSolido(drawMalla, color) {
