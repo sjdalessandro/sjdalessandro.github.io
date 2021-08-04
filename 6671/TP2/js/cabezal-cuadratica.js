@@ -22,12 +22,21 @@ class CabezalCuadratica extends Cabezal {
             let pctrl = [puntosDeControl[t], puntosDeControl[t+1], puntosDeControl[t+2]];
 
             let verticesTramo = this.getVertices(pctrl);
+            if (this.vertices.length > 0) {
+                verticesTramo.shift();
+            }
             this.vertices = [...this.vertices, ...verticesTramo];
 
             let tangentesTramo = this.getTangentes(pctrl);
+            if (this.tangentes.length > 0) {
+                tangentesTramo.shift();
+            }
             this.tangentes = [...this.tangentes, ...tangentesTramo];
 
             let normalesTramo = this.getNormales(pctrl);
+            if (this.normales.length > 0) {
+                normalesTramo.shift();
+            }
             this.normales = [...this.normales, ...normalesTramo];
         }
 
@@ -97,8 +106,7 @@ class CabezalCuadratica extends Cabezal {
             let tangente2D = this.tangente(u, puntosDeControl);
             let tangente = [tangente2D[0], 0, tangente2D[1]];
             let binormal = [0, 1, 0];
-            //let normal = this.pcruz(tangente, binormal);
-            let normal = this.pcruz(binormal, tangente);
+            let normal = this.pcruz(tangente, binormal);
             puntos.push(this.normalize(normal));
         }
         return puntos;
