@@ -5,8 +5,7 @@ class Grua {
         this.anguloCamaraCabina = 0;
         this.alturaSegmentoColumna = 4;
         this.elevacionSegmentoColumna1 = this.alturaSegmentoColumna;
-        this.elevacionSegmentoColumna2 = 1;
-        this.modificada = true;
+        this.factorDeEscaladoPiston = 1;
         this.largoEje = 1.5;
         this.largoBrazo = 24;
         this.anguloBrazo = 0;
@@ -18,6 +17,7 @@ class Grua {
         this.colorContrapeso = [0.5, 0.5, 0.5];
         this.colorPiston = [0.3, 0.3, 0.5];
         this.getCamara = getCamara;
+        this.resetDeltas();
     
         this.extrusorCuboA = this.crearColumna(1.5);
         this.extrusorCuboB = this.crearColumna(1.2);
@@ -50,7 +50,10 @@ class Grua {
         this.actualizar();
 
         window.addEventListener("keydown", event => {
-            this.keyEvent(event);
+            this.keyDown(event);
+        }, false);
+        window.addEventListener("keyup", event => {
+            this.keyUp(event);
         }, false);
     }
 
@@ -83,13 +86,13 @@ class Grua {
 
         let modelMatrixC = mat4.create();
         mat4.translate(modelMatrixC, modelMatrixB, [0, this.alturaSegmentoColumna, 0]);
-        mat4.scale(modelMatrixC, modelMatrixC, [1, this.elevacionSegmentoColumna2, 1]);
+        mat4.scale(modelMatrixC, modelMatrixC, [1, this.factorDeEscaladoPiston, 1]);
         this.extrusorCuboC.setModelMatrix(modelMatrixC);
 
         let modelMatrixCabina = mat4.create();
-        if (this.elevacionSegmentoColumna2 != 0) {
+        if (this.factorDeEscaladoPiston != 0) {
             mat4.translate(modelMatrixCabina, modelMatrixC, [0, this.alturaSegmentoColumna, 0]);
-            mat4.scale(modelMatrixCabina, modelMatrixCabina, [1, 1/this.elevacionSegmentoColumna2, 1]);
+            mat4.scale(modelMatrixCabina, modelMatrixCabina, [1, 1/this.factorDeEscaladoPiston, 1]);
         } else {
             mat4.translate(modelMatrixCabina, modelMatrixB, [0, this.alturaSegmentoColumna, 0]);
         }
@@ -98,7 +101,7 @@ class Grua {
 
         this.posicionCamaraCabina = [
             -this.posicion[0],
-            -this.posicion[1] - this.alturaSegmentoColumna - this.elevacionSegmentoColumna1 - this.elevacionSegmentoColumna2*this.alturaSegmentoColumna - this.cabina.altura/2,
+            -this.posicion[1] - this.alturaSegmentoColumna - this.elevacionSegmentoColumna1 - this.factorDeEscaladoPiston*this.alturaSegmentoColumna - this.cabina.altura/2,
             -this.posicion[2]
         ];
 
@@ -136,8 +139,6 @@ class Grua {
         mat4.translate(modelMatrixPlataforma, modelMatrixPlataforma,
             [0, this.largoSogaExtra*Math.cos(Math.PI/4), 0]);
         this.plataforma.setModelMatrix(modelMatrixPlataforma);
-
-        this.modificada = false;
     }
 
     actualizarSoga(soga, modelMatrix, a, v) {
@@ -158,7 +159,8 @@ class Grua {
     }
 
     draw(drawMalla, vista) {
-        if (this.modificada) {
+        if (this.modificada()) {
+            this.reconfigurar();
             this.actualizar();
             vista();
         }
@@ -179,67 +181,113 @@ class Grua {
         this.contrapeso.drawSolido(drawMalla, this.colorContrapeso);
     }
     
-    keyEvent(event) {
+    keyDown(event) {
         let key = event.keyCode || event.which;
         let keychar = String.fromCharCode(key);
         if (keychar == "I") {
-            if (this.elevacionSegmentoColumna1 < this.alturaSegmentoColumna) {
-                this.elevacionSegmentoColumna1 += 0.15;
-                this.modificada = true;
-            } else {
-                if (this.elevacionSegmentoColumna1 != this.alturaSegmentoColumna) {
-                    this.elevacionSegmentoColumna1 = this.alturaSegmentoColumna;
-                    this.modificada = true;
-                }
-                if (this.elevacionSegmentoColumna2 < 10) {
-                    this.elevacionSegmentoColumna2 += 0.05;
-                    this.modificada = true;
-                }
-            }
-        } else if (keychar == "K") {
-            if (this.elevacionSegmentoColumna2 > 0) {
-                this.elevacionSegmentoColumna2 -= 0.05;
-                this.modificada = true;
-            } else {
-                if (this.elevacionSegmentoColumna2 != 0) {
-                    this.elevacionSegmentoColumna2 = 0;
-                    this.modificada = true;
-                }
-                if (this.elevacionSegmentoColumna1 > 0) {
-                    this.elevacionSegmentoColumna1 -= 0.15;
-                    this.modificada = true;
-                } else if (this.elevacionSegmentoColumna1 != 0) {
-                    this.elevacionSegmentoColumna1 = 0;
-                    this.modificada = true;
-                }
-            }
+            this.deltaElevacionGrua = 0.05;
+        }
+        if (keychar == "K") {
+            this.deltaElevacionGrua = -0.05;
         }
         if (keychar == "O") {
-            if (this.largoSoga > 1) {
-                this.largoSoga -= 0.1;
-                this.modificada = true;
-            }
-        } else if (keychar == "L") {
-            this.largoSoga += 0.1;
-            this.modificada = true;
+            this.deltaLargoSoga = -0.1;
+        }
+        if (keychar == "L") {
+            this.deltaLargoSoga = 0.1;
         }
         if (keychar == "G") {
-            if (this.anguloBrazo > -Math.PI/8) {
-                this.anguloBrazo -= 0.01;
-                this.modificada = true;
-            }
-        } else if (keychar == "B") {
-            if (this.anguloBrazo < Math.PI/8) {
-                this.anguloBrazo += 0.01;
-                this.modificada = true;
-            }
+            this.deltaAnguloBrazo = -0.01;
+        }
+        if (keychar == "B") {
+            this.deltaAnguloBrazo = 0.01;
         }
         if (keychar == "V") {
-            this.anguloCabina += 0.01;
-            this.modificada = true;
-        } else if (keychar == "N") {
-            this.anguloCabina -= 0.01;
-            this.modificada = true;
+            this.deltaAnguloCabina = 0.01;
         }
+        if (keychar == "N") {
+            this.deltaAnguloCabina = -0.01;
+        }
+    }
+
+    resetDeltas() {
+        this.deltaElevacionGrua = 0;
+        this.deltaLargoSoga = 0;
+        this.deltaAnguloBrazo = 0;
+        this.deltaAnguloCabina = 0;
+    }
+
+    modificada() {
+        return this.deltaElevacionGrua ||
+               this.deltaLargoSoga ||
+               this.deltaAnguloBrazo ||
+               this.deltaAnguloCabina;
+    }
+
+    keyUp(event) {
+        let key = event.keyCode || event.which;
+        let keychar = String.fromCharCode(key);
+        if (keychar == "I") {
+            this.deltaElevacionGrua = 0;
+        }
+        if (keychar == "K") {
+            this.deltaElevacionGrua = 0;
+        }
+        if (keychar == "O") {
+            this.deltaLargoSoga = 0;
+        }
+        if (keychar == "L") {
+            this.deltaLargoSoga = 0;
+        }
+        if (keychar == "G") {
+            this.deltaAnguloBrazo = 0;
+        }
+        if (keychar == "B") {
+            this.deltaAnguloBrazo = 0;
+        }
+        if (keychar == "V") {
+            this.deltaAnguloCabina = 0;
+        }
+        if (keychar == "N") {
+            this.deltaAnguloCabina = 0;
+        }
+    }
+
+    reconfigurar() {
+        const f = 4;
+        if (this.deltaElevacionGrua > 0) {
+            this.elevacionSegmentoColumna1 += this.deltaElevacionGrua * f;
+            let deltaFactorDeEscaladoPiston = 0;
+            if (this.elevacionSegmentoColumna1 > this.alturaSegmentoColumna) {
+                deltaFactorDeEscaladoPiston = (this.elevacionSegmentoColumna1 - this.alturaSegmentoColumna) / f;
+                this.elevacionSegmentoColumna1 = this.alturaSegmentoColumna;
+            }
+            this.factorDeEscaladoPiston += deltaFactorDeEscaladoPiston;
+        } else {
+            this.factorDeEscaladoPiston += this.deltaElevacionGrua;
+            let deltaElevacionColumna1 = 0;
+            if (this.factorDeEscaladoPiston < 0) {
+                deltaElevacionColumna1 = this.factorDeEscaladoPiston * f;
+                this.factorDeEscaladoPiston = 0;
+            }
+            this.elevacionSegmentoColumna1 += deltaElevacionColumna1;
+            if (this.elevacionSegmentoColumna1 < 0) {
+                this.elevacionSegmentoColumna1 = 0;
+            }
+        }
+        
+        this.largoSoga += this.deltaLargoSoga;
+        if (this.largoSoga < 1) {
+            this.largoSoga = 1;
+        }
+
+        this.anguloBrazo += this.deltaAnguloBrazo;
+        if (this.anguloBrazo < -Math.PI/8) {
+            this.anguloBrazo = -Math.PI/8;
+        } else if (this.anguloBrazo > Math.PI/8) {
+            this.anguloBrazo = Math.PI/8;
+        }
+
+        this.anguloCabina +=  this.deltaAnguloCabina;
     }
 }
