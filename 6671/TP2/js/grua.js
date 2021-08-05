@@ -164,20 +164,19 @@ class Grua {
             this.actualizar();
             vista();
         }
-        this.extrusorCuboA.drawTexturado(drawMalla, texturas.metalOxidado);
-        this.extrusorCuboB.drawTexturado(drawMalla, texturas.metalOxidado);
+        this.extrusorCuboA.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.extrusorCuboB.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
         this.extrusorCuboC.drawSolido(drawMalla, this.colorPiston);
         this.cabina.draw(drawMalla, texturas.metalOxidado);
-        this.extrusorEjeE.draw(drawMalla, this.colorEje);
-        this.brazo.drawTexturado(drawMalla, texturas.metalOxidado);
-        this.extrusorEjeG.draw(drawMalla, this.colorEje);
+        this.extrusorEjeE.drawWithNormalMap(drawMalla, texturas.eje, texturas.ejeNormalMap);
+        this.brazo.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.extrusorEjeG.drawWithNormalMap(drawMalla, texturas.eje, texturas.ejeNormalMap);
         this.extrusorSoga.drawSolido(drawMalla, this.colorSoga);
         this.extrusorSogaA.drawSolido(drawMalla, this.colorSoga);
         this.extrusorSogaB.drawSolido(drawMalla, this.colorSoga);
         this.extrusorSogaC.drawSolido(drawMalla, this.colorSoga);
         this.extrusorSogaD.drawSolido(drawMalla, this.colorSoga);
-        this.plataforma.drawTexturado(drawMalla, texturas.maderaPiso);
-        //this.plataforma.drawWithNormalMap(drawMalla, texturas.maderaPoste, texturas.maderaPosteNormalMap);
+        this.plataforma.drawWithNormalMap(drawMalla, texturas.maderaPoste, texturas.maderaPosteNormalMap);
         this.contrapeso.drawSolido(drawMalla, this.colorContrapeso);
     }
     

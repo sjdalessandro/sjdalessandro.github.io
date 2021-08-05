@@ -89,7 +89,6 @@
             var tierra = null;
             var tobogan = null;
             var cielo = null;
-            var test = null;
 
             var colorTierra = [0.0, 0.5, 0.2];
             var colorCielo = [0.0, 0.2, 0.6];
@@ -213,8 +212,6 @@
                 mat4.identity(modelMatrixTierra);
                 mat4.translate(modelMatrixTierra, modelMatrixTierra, [0, -1.0, 0]);
                 tierra.setModelMatrix(modelMatrixTierra);
-
-                test = new Cuboide(12.3, 12.3, 12.3, true, texturaAjustadaXRepetidaY, texturaAjustada);
 
                 resizeEvent();
                 setupWebGL();
@@ -387,7 +384,7 @@
 
                 glPrograms.normalMap = initShader(normalMapFragmentShader, normalMapVertexShader);
                 glPrograms.normalMap.setup = setupUniformsNormalMap;
-                //initUniformsNormalMap(glPrograms.normalMap);
+                initUniformsNormalMap(glPrograms.normalMap);
             }
 
             function initShader(fs_source, vs_source) {
@@ -492,15 +489,22 @@
                     texturas.maderaEntrada = await initTexture("WoodenPlanks05_MR_1K/WoodenPlanks05_1K_BaseColor.png");
                     texturas.maderaEntradaNormalMap = await initTexture("WoodenPlanks05_MR_1K/WoodenPlanks05_1K_Normal.png");
                     texturas.metalOxidado = await initTexture("PaintedMetal02_MR_1K/PaintedMetal02_1K_BaseColor.png");
+                    texturas.metalOxidadoNormalMap = await initTexture("PaintedMetal02_MR_1K/PaintedMetal02_1K_Normal.png");
                     texturas.cemento = await initTexture("Dirt03_MR_1K/Dirt03_1K_BaseColor.png");
+                    texturas.cementoNormalMap = await initTexture("Dirt03_MR_1K/Dirt03_1K_Normal.png");
                     texturas.ascensores = await initTexture("WhiteStuccoWall01_MR_1K/WhiteStuccoWall01_1K_BaseColor.png");
+                    texturas.ascensoresNormalMap = await initTexture("WhiteStuccoWall01_MR_1K/WhiteStuccoWall01_1K_Normal.png");
                     texturas.baseEdificio = await initTexture("StoneWall02_MR_1K/StoneWall02_1K_BaseColor.png");
                     texturas.baseEdificioNormalMap = await initTexture("StoneWall02_MR_1K/StoneWall02_1K_Normal.png");
                     texturas.columna = await initTexture("StuccoWall01_MR_1K/StuccoWall01_1K_BaseColor.png");
+                    texturas.columnaNormalMap = await initTexture("StuccoWall01_MR_1K/StuccoWall01_1K_Normal.png");
                     texturas.marco = await initTexture("BrushedGold02_MR_1K/BrushedGold02_1K_BaseColor.png");
+                    texturas.marcoNormalMap = await initTexture("BrushedGold02_MR_1K/BrushedGold02_1K_Normal.png");
                     texturas.tierra0 = await initTexture("WhiteGravel01_MR_1K/WhiteGravel01_1K_BaseColor.png");
                     texturas.tierra1 = await initTexture("roca.jpg");
                     texturas.tierra2 = await initTexture("pasto.jpg");
+                    texturas.eje = await initTexture("OldIron01_MR_1K/OldIron01_1K_BaseColor.png");
+                    texturas.ejeNormalMap = await initTexture("OldIron01_MR_1K/OldIron01_1K_Normal.png");
 
                     var texture = gl.createTexture();
                     await initCubemapTexture("Cielo/nx.png", texture, gl.TEXTURE_CUBE_MAP_NEGATIVE_X);
@@ -584,11 +588,11 @@
 
                 gl.activeTexture(gl.TEXTURE0);
 				gl.bindTexture(gl.TEXTURE_2D, textura);
-                gl.uniform1i(glProgram.samplerUniform, 0);
+                gl.uniform1i(glProgram.sampler0Uniform, 0);
 
                 gl.activeTexture(gl.TEXTURE1);
 				gl.bindTexture(gl.TEXTURE_2D, normalMap);
-                gl.uniform1i(glProgram.samplerUniform, 1);
+                gl.uniform1i(glProgram.sampler1Uniform, 1);
             }
 
             function setupUniformsVidrio(modelMatrix, glProgram){
@@ -667,22 +671,9 @@
                 grua.draw(drawMalla, vista);
                 edificio.draw(drawMalla);
                 tobogan.draw(drawMalla);
-
-                //test.drawWithNormalMap(drawMalla, texturas.baseEdificio, texturas.baseEdificioNormalMap);
             }
 
-            var test_angle = 0;
             function tick(){
-
-                /*
-                let m = mat4.create();
-                mat4.translate(m, m, [0, 6, 0]);
-                mat4.rotate(m, m, test_angle/2, [1, 0, 0]);
-                //mat4.rotate(m, m, test_angle/2, [0, 1, 0]);
-                //mat4.rotate(m, m, test_angle/2, [0, 0, 1]);
-                test.setModelMatrix(m);
-                test_angle += 0.05;
-                */
 
                 requestAnimationFrame(tick);
                 drawScene();

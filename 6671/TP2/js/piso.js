@@ -181,16 +181,16 @@ class Piso {
             this.actualizar();
         }
 
-        this.losa.drawTexturado(drawMalla, texturas.cemento);
+        this.losa.drawWithNormalMap(drawMalla, texturas.cemento, texturas.cementoNormalMap);
         this.ventanalA.drawVidrio(drawMalla);
         this.ventanalB.drawVidrio(drawMalla);
         this.ventanalC.drawVidrio(drawMalla);
         this.ventanalD.drawVidrio(drawMalla);
         this.marcos.forEach(marco => {
-            marco.drawTexturado(drawMalla, texturas.marco);
+            marco.drawWithNormalMap(drawMalla, texturas.marco, texturas.marcoNormalMap);
         });
         this.columnas.forEach(columna => {
-           columna.drawTexturado(drawMalla, texturas.columna);
+           columna.drawWithNormalMap(drawMalla, texturas.columna, texturas.columnaNormalMap);
         });
     }
 }

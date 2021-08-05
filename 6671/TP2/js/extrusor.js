@@ -53,13 +53,7 @@ class Extrusor {
             positionBuffer.push(pos[1]);
             positionBuffer.push(pos[2]);
 
-            //var tan=this.getTangente(u,v);
-            var tan;
-            if (v == 0) {
-                tan =[1, 0, 0];
-            } else {
-                tan =[0, 0, 1];
-            }
+            var tan = [1, 0, 0];
 
             tangentBuffer.push(tan[0]);
             tangentBuffer.push(tan[1]);
@@ -93,13 +87,7 @@ class Extrusor {
             positionBuffer.push(pos[1]);
             positionBuffer.push(pos[2]);
 
-            //var tan=this.getTangente(u,v);
-            var tan;
-            if (v == 0) {
-                tan =[1, 0, 0];
-            } else {
-                tan =[0, 0, 1];
-            }
+            var tan = [1, 0, 0];
     
             tangentBuffer.push(tan[0]);
             tangentBuffer.push(tan[1]);

@@ -12,14 +12,14 @@ class CabezalRectangulo extends Cabezal {
                          [1, 0, 0],
                          [0, 0, -1]];
 
-        this.tangentes = [[0, 0, 1],
-                          [0, 0, 1],
-                          [1, 0, 0],
-                          [0, 0, -1],
-                          [1, 0, 0],
+        this.tangentes = [[0, 0, -1],
                           [0, 0, -1],
                           [-1, 0, 0],
-                          [-1, 0, 0]];
+                          [-1, 0, 0],
+                          [0, 0, 1],
+                          [0, 0, 1],
+                          [1, 0, 0],
+                          [1, 0, 0]];
 
         let v = [this.vertices[0]];
         for (let i = 1; i < this.vertices.length; i++) {

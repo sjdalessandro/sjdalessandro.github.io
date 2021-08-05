@@ -19,16 +19,9 @@ var normalMapVertexShader = `
 
     void main(void) {
         gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(aVertexPosition, 1.0);
-        vPosWorld=(modelMatrix*vec4(aVertexPosition,1.0)).xyz;
-        vNormal=normalize(normalMatrix*aVertexNormal);
-        vTangent=normalize(normalMatrix*aVertexTangent);
         vUv = aUv;
-        /*
-        vec3 T = normalize(vec3(modelMatrix * vec4(aVertexTangent,   0.0)));
-        vec3 N = normalize(vec3(modelMatrix * vec4(aVertexNormal,    0.0)));
-        vec3 B = cross(T, N);
-        //vTBN = mat3(N, B, T);
-        vTBN = mat3(N, B, T);
-        */
+        vPosWorld=(modelMatrix*vec4(aVertexPosition,1.0)).xyz;
+        vTangent = normalize(normalMatrix * aVertexTangent);
+        vNormal = normalize(normalMatrix * aVertexNormal);
     }
 `;

@@ -190,12 +190,12 @@ class Edificio {
         this.pisos.forEach((piso, i) => {
             piso.draw(drawMalla);
         });
-        this.ascensores.drawTexturado(drawMalla, texturas.ascensores);
-        this.losa.drawTexturado(drawMalla, texturas.cemento);
+        this.ascensores.drawWithNormalMap(drawMalla, texturas.ascensores, texturas.ascensoresNormalMap);
+        this.losa.drawWithNormalMap(drawMalla, texturas.cemento, texturas.cementoNormalMap);
         this.pisosChicos.forEach((piso, i) => {
             piso.draw(drawMalla);
         });
-        this.base.drawTexturado(drawMalla, texturas.baseEdificio);
-        this.entrada.drawTexturado(drawMalla, texturas.maderaEntrada);
+        this.base.drawWithNormalMap(drawMalla, texturas.baseEdificio, texturas.baseEdificioNormalMap);
+        this.entrada.drawWithNormalMap(drawMalla, texturas.maderaEntrada, texturas.maderaEntradaNormalMap);
     }
 }

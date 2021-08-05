@@ -90,12 +90,12 @@ class Cabina {
             this.actualizar();
         }
 
-        this.extrusorPiso.drawTexturado(drawMalla, textura);
-        this.lateralA.drawTexturado(drawMalla, textura);
-        this.lateralB.drawTexturado(drawMalla, textura);
-        this.extrusorTecho.drawTexturado(drawMalla, textura);
-        this.extrusorSoporteA.drawTexturado(drawMalla, textura);
-        this.extrusorSoporteB.drawTexturado(drawMalla, textura);
-        this.fondo.drawTexturado(drawMalla, textura);
+        this.extrusorPiso.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.lateralA.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.lateralB.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.extrusorTecho.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.extrusorSoporteA.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.extrusorSoporteB.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
+        this.fondo.drawWithNormalMap(drawMalla, texturas.metalOxidado, texturas.metalOxidadoNormalMap);
     }
 }
