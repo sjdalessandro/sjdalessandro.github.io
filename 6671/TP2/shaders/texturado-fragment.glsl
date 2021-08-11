@@ -29,7 +29,7 @@ var texturadoFragmentShader = `
         vec3 specular = specularStrength * spec * specularLightColor;  
         
         vec4 color=texture2D(textura, vUv); 
-        vec3 result = (ambient + diffuse + specular) * color.xyz;
+        vec3 result = (ambient + diffuse) * color.xyz + specular;
         gl_FragColor = vec4(result, 1.0);
     }
 `;

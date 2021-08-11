@@ -35,7 +35,7 @@ var vidrioFragmentShader = `
         vec3 direction = reflect(eyeToSurfaceDir, worldNormal);
 
         vec3 color = textureCube(uSkybox, direction).xyz * vec3(0.6, 0.9, 0.6);
-        vec3 result = (ambient + diffuse + specular) * color;
+        vec3 result = (ambient + diffuse) * color + specular;
 
         gl_FragColor = vec4(result, 1.0);
     }

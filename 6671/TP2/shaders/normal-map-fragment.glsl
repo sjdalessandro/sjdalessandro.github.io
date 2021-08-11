@@ -43,11 +43,12 @@ var normalMapFragmentShader = `
         float specularStrength = 0.3;
         vec3 viewDir = normalize(viewPos - vPosWorld);
         vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64.0);
         vec3 specular = specularStrength * spec * specularLightColor;  
         
         vec4 color=texture2D(textura, vUv); 
-        vec3 result = (ambient + diffuse + specular) * color.xyz;
+        vec3 result = (ambient + diffuse) * color.xyz + specular;
+
         gl_FragColor = vec4(result, 1.0);
     }
 `;
