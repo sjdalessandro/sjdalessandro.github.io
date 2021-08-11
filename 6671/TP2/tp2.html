@@ -53,9 +53,6 @@
         <script src="shaders/texturado-vertex.glsl"></script>
         <script src="shaders/texturado-fragment.glsl"></script>
 
-        <script src="shaders/incorrecto-vertex.glsl"></script>
-        <script src="shaders/incorrecto-fragment.glsl"></script>
-
         <script src="shaders/cielo-vertex.glsl"></script>
         <script src="shaders/cielo-fragment.glsl"></script>
 
@@ -357,10 +354,6 @@
             }
 
             function initShaders() {
-
-                glPrograms.incorrecto = initShader(incorrectoFragmentShader, incorrectoVertexShader);
-                glPrograms.incorrecto.setup = setupUniforms;
-                initUniforms(glPrograms.incorrecto)
 
                 glPrograms.solido = initShader(solidoFragmentShader, solidoVertexShader);
                 glPrograms.solido.setup = setupUniformsSolido;
