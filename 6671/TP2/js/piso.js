@@ -18,6 +18,7 @@ class Piso {
         this.largo = this.ventanasLargo * this.ventanaLado;
 
         this.alturaLosa = 0.3;
+        this.factorRepeticionTapaLosa = 0.3;
 
         this.diametroColumna = 0.8;
         this.colorColumna = [0.3, 0.7, 0.3];
@@ -74,7 +75,7 @@ class Piso {
     crearLosa(verticesLosa, chico) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaAjustada);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaRepetida, this.factorRepeticionTapaLosa);
     }
 
     actualizar(modelMatrixA) {

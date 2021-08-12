@@ -1,5 +1,5 @@
 class Extrusor {
-    constructor(cabezal, trayectoria, tapar, tipoTextura, tipoTexturaEnTapa) {
+    constructor(cabezal, trayectoria, tapar, tipoTextura, tipoTexturaEnTapa, factorRepeticionTapa) {
         this.modelMatrix = mat4.create();
         mat4.identity(this.modelMatrix);
         this.cabezal = cabezal;
@@ -7,6 +7,7 @@ class Extrusor {
         this.tapar = tapar;
         this.tipoTextura = tipoTextura;
         this.tipoTexturaEnTapa = tipoTexturaEnTapa;
+        this.factorRepeticionTapa = factorRepeticionTapa;
         this.columnas = cabezal.getVerticesLength();
         this.filas = trayectoria.getMatricesLength() - 1;
         this.malla = undefined;
@@ -65,9 +66,11 @@ class Extrusor {
             normalBuffer.push(nrm[1]);
             normalBuffer.push(nrm[2]);
 
-            var uvs = [pos[0], pos[2]];
+            var uvs;
             if (this.tipoTexturaEnTapa == texturaAjustada) {
-                uvs = this.cabezal.escalarATextura(uvs);
+                uvs = this.cabezal.escalarATextura([pos[0], pos[2]]);
+            } else {
+                uvs = [pos[0]*this.factorRepeticionTapa, pos[2]*this.factorRepeticionTapa];
             }
 
             uvBuffer.push(uvs[0]);
@@ -99,9 +102,11 @@ class Extrusor {
             normalBuffer.push(nrm[1]);
             normalBuffer.push(nrm[2]);
 
-            var uvs = [pos[0], pos[2]];
+            var uvs;
             if (this.tipoTexturaEnTapa == texturaAjustada) {
-                uvs = this.cabezal.escalarATextura(uvs);
+                uvs = this.cabezal.escalarATextura([pos[0], pos[2]]);
+            } else {
+                uvs = [pos[0]*this.factorRepeticionTapa, pos[2]*this.factorRepeticionTapa];
             }
 
             uvBuffer.push(uvs[0]);

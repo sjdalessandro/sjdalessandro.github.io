@@ -9,6 +9,7 @@ class Edificio {
         this.toboganZ = 0;
 
         this.alturaLosa = 0.3;
+        this.factorRepeticionTapaLosa = 0.3;
         this.alturaBase = this.ventanaLado;
         this.colorBase = [0.15, 0.15, 0.15];
         this.colorBase = [0.4, 0.25, 0.25];
@@ -91,7 +92,7 @@ class Edificio {
     crearLosa(verticesLosa) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaAjustada);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaRepetida, this.factorRepeticionTapaLosa);
     }
 
     crearPisosGrandes() {
