@@ -189,7 +189,7 @@
                     this.resizeEvent(event);
                 }, false);
 
-                const ladoTierra = 10000;
+                const ladoTierra = 20000;
 
                 initMenu();
 
@@ -202,13 +202,14 @@
                     menu.pisosTramo2,
                     menu.columnas
                 );
-                tierra = new Cuboide(ladoTierra, ladoTierra, 1, true, texturaRepetida, texturaRepetida);
+                tierra = new Cuboide(ladoTierra, ladoTierra, ladoTierra, false, texturaRepetida, texturaRepetida);
                 let diametroTobogan = 0.8;
                 tobogan = new Tobogan(edificio, diametroTobogan, 6);
 
                 let modelMatrixTierra = mat4.create();
                 mat4.identity(modelMatrixTierra);
-                mat4.translate(modelMatrixTierra, modelMatrixTierra, [0, -1.0, 0]);
+                mat4.rotate(modelMatrixTierra, modelMatrixTierra, Math.PI/2, [0, 0, 1]);
+                mat4.translate(modelMatrixTierra, modelMatrixTierra, [-ladoTierra/2, -ladoTierra/2, 0]);
                 tierra.setModelMatrix(modelMatrixTierra);
 
                 resizeEvent();
@@ -616,7 +617,7 @@
 
             function setupUniformsTierra(modelMatrix, glProgram, textura0, textura1, textura2){
                 setupUniforms(modelMatrix, glProgram);
-                gl.uniform1fv(glProgram.scaleUniform, [0.003]);
+                gl.uniform1fv(glProgram.scaleUniform, [0.03]);
                 gl.uniform1fv(glProgram.lowUniform, [-0.5]);
                 gl.uniform1fv(glProgram.highUniform, [0.5]);
 
