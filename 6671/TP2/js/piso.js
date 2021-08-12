@@ -109,7 +109,7 @@ class Piso {
             const f = 1;
             let pos = [ver[0] - f*normal[0], ver[1], ver[2] - f*normal[2]];
             mat4.translate(modelMatrixColumna, modelMatrixA,
-                    [pos[0], desplazamientoInicial, pos[1]]);
+                    [pos[0], desplazamientoInicial, pos[2]]);
             columna.setModelMatrix(modelMatrixColumna);
         });
 
