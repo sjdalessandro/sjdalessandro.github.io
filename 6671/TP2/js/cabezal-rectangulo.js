@@ -3,10 +3,10 @@ class CabezalRectangulo extends Cabezal {
         super();
         const mitadA = ancho/2;
         const mitadB = largo/2;
-        this.vertices = [[-mitadA, -mitadB],
-                         [-mitadA, mitadB],
-                         [mitadA, mitadB],
-                         [mitadA, -mitadB]];
+        this.vertices = [[-mitadA, 0, -mitadB],
+                         [-mitadA, 0, mitadB],
+                         [mitadA, 0, mitadB],
+                         [mitadA, 0, -mitadB]];
         this.normales = [[-1, 0, 0],
                          [0, 0, 1],
                          [1, 0, 0],

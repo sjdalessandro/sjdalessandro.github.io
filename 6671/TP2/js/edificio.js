@@ -60,15 +60,15 @@ class Edificio {
         let xvertices0 = [];
         let xverticesf = [];
         for (let x = x0 + stepX; x <= xf; x += stepX) {
-            xvertices0.push([x, y0]);
-            xverticesf.push([x, yf]);
+            xvertices0.push([x, 0, y0]);
+            xverticesf.push([x, 0, yf]);
         }
         xverticesf.reverse();
         let yvertices0 = [];
         let yverticesf = [];
         for (let y = y0 + stepY; y <= yf; y += stepY) {
-            yvertices0.push([x0, y]);
-            yverticesf.push([xf, y]);
+            yvertices0.push([x0, 0, y]);
+            yverticesf.push([xf, 0, y]);
         }
         yvertices0.reverse();
         let vertices = [...xvertices0, ...yverticesf, ...xverticesf, ...yvertices0];
@@ -81,9 +81,9 @@ class Edificio {
         for (let i = 0; i < vertices.length; i++) {
             let v = vertices[i];
             v[0] += Math.random()*(max - min) + min;
-            v[1] += Math.random()*(max - min) + min;
-            if (this.toboganZ < v[1]) {
-                this.toboganZ = v[1];
+            v[2] += Math.random()*(max - min) + min;
+            if (this.toboganZ < v[2]) {
+                this.toboganZ = v[2];
             }
         }
     }
@@ -129,7 +129,7 @@ class Edificio {
     escalarVertices(vertices, f) {
         let verticesChico = [];
         for (let i = 0; i < vertices.length; i++) {
-            verticesChico.push([f*vertices[i][0], f*vertices[i][1]]);
+            verticesChico.push([f*vertices[i][0], vertices[i][1], f*vertices[i][2]]);
         }
         return verticesChico;
     }

@@ -44,20 +44,20 @@ class CabezalCuadratica extends Cabezal {
     }
 
     getVertice(u) {
-        let deltaU = 1/this.tramos;
-        let t = Math.floor((u%1) / deltaU);
+        let p = (u%1) * this.tramos;
+        let t = Math.floor(p);
+        u = p - t;
         let pctrl = this.puntosDeControl.slice(t, t+3);
-        u = (u - t*deltaU)/deltaU;
         return this.curva(u, pctrl);
     }
     
     getNormal(u) {
-        let deltaU = 1/this.tramos;
-        let t = Math.floor((u%1) / deltaU);
+        let p = (u%1) * this.tramos;
+        let t = Math.floor(p);
+        u = p - t;
         let pctrl = this.puntosDeControl.slice(t, t+3);
-        u = (u - t*deltaU)/deltaU;
-        let der = this.tangente(u, pctrl);
-        let normal = this.pcruz([0, 1, 0], [der[0], 0, der[1]]);
+        let tangente = this.tangente(u, pctrl);
+        let normal = this.pcruz(this.binormal, tangente);
         return this.normalize(normal);
     }
 
@@ -68,8 +68,9 @@ class CabezalCuadratica extends Cabezal {
 		
 		let x = this.base0(u)*p0[0] + this.base1(u)*p1[0] + this.base2(u)*p2[0];
         let y = this.base0(u)*p0[1] + this.base1(u)*p1[1] + this.base2(u)*p2[1];
+        let z = this.base0(u)*p0[2] + this.base1(u)*p1[2] + this.base2(u)*p2[2];
 
-		return [x, y];
+		return [x, y, z];
 	}
 
     getVertices(puntosDeControl) {
@@ -87,15 +88,16 @@ class CabezalCuadratica extends Cabezal {
 		
 		let x = this.base0der(u)*p0[0] + this.base1der(u)*p1[0] + this.base2der(u)*p2[0];
         let y = this.base0der(u)*p0[1] + this.base1der(u)*p1[1] + this.base2der(u)*p2[1];
+        let z = this.base0der(u)*p0[2] + this.base1der(u)*p1[2] + this.base2der(u)*p2[2];
 
-		return [x, y];
+		return [x, y, z];
 	}
 
     getTangentes(puntosDeControl) {
         let puntos = [];
 		for (var u=0; u <= 1.0; u += this.step){
-            let der = this.tangente(u, puntosDeControl);
-            puntos.push(this.normalize([der[0], 0, der[1]]));
+            let tangente = this.tangente(u, puntosDeControl);
+            puntos.push(this.normalize(tangente));
         }
         return puntos;
     }
@@ -103,10 +105,8 @@ class CabezalCuadratica extends Cabezal {
     getNormales(puntosDeControl) {
         let puntos = [];
 		for (var u=0; u <= 1.0; u += this.step){
-            let tangente2D = this.tangente(u, puntosDeControl);
-            let tangente = [tangente2D[0], 0, tangente2D[1]];
-            let binormal = [0, 1, 0];
-            let normal = this.pcruz(tangente, binormal);
+            let tangente = this.tangente(u, puntosDeControl);
+            let normal = this.pcruz(tangente, this.binormal);
             puntos.push(this.normalize(normal));
         }
         return puntos;

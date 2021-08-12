@@ -16,29 +16,29 @@ class Extrusor {
 
     getPosicion(u, v) {
 
-        let pos2D = this.cabezal.getPosicion(u);
-        let pos = this.trayectoria.getPosicion(pos2D, v);
+        let pos = this.cabezal.getPosicion(u);
+        pos = this.trayectoria.getPosicion(pos, v);
         return pos;
     }
 
     getNormal(u, v) {
 
-        let normal2D = this.cabezal.getNormal(u);
-        let normal = this.trayectoria.getNormal(normal2D, v);
+        let normal = this.cabezal.getNormal(u);
+        normal = this.trayectoria.getNormal(normal, v);
         return normal;
     }
 
     getTangente(u, v) {
 
-        let tangente2D = this.cabezal.getTangente(u);
-        let tangente = this.trayectoria.getTangente(tangente2D, v);
+        let tangente = this.cabezal.getTangente(u);
+        tangente = this.trayectoria.getTangente(tangente, v);
         return tangente;
     }
 
     getCentro(v) {
 
-        let pos2D = this.cabezal.getCentro();
-        let pos = this.trayectoria.getCentro(pos2D, v);
+        let pos = this.cabezal.getCentro();
+        pos = this.trayectoria.getCentro(pos, v);
         return pos;
     }
 
@@ -286,10 +286,5 @@ class Extrusor {
     drawVidrio(drawMalla) {
         glPrograms.vidrio.setup(this.getModelMatrix(), glPrograms.vidrio);
         drawMalla(this.getMalla(), glPrograms.vidrio);
-    }
-
-    draw(drawMalla) {
-        glPrograms.incorrecto.setup(this.getModelMatrix(), glPrograms.incorrecto);
-        drawMalla(this.getMalla(), glPrograms.incorrecto);
     }
 }

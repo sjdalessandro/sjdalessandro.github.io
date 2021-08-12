@@ -1,16 +1,16 @@
 class CabezalBaseEdificio extends Cabezal {
     constructor(ancho, largo, puerta) {
         super();
-        this.vertices = [[-ancho, -largo],
-                         [-ancho, largo],
+        this.vertices = [[-ancho, 0, -largo],
+                         [-ancho, 0, largo],
 
-                         [-puerta/2, largo],
-                         [-puerta/2, -largo*0.9],
-                         [puerta/2, -largo*0.9],
-                         [puerta/2, largo],
+                         [-puerta/2, 0, largo],
+                         [-puerta/2, 0, -largo*0.9],
+                         [puerta/2, 0, -largo*0.9],
+                         [puerta/2, 0, largo],
                          
-                         [ancho, largo],
-                         [ancho, -largo]];
+                         [ancho, 0, largo],
+                         [ancho, 0, -largo]];
         this.normales = [[-1, 0, 0],
                          [0, 0, 1],
 

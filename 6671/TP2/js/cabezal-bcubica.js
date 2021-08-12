@@ -45,8 +45,9 @@ class CabezalBCubica extends Cabezal {
 		
 		let x = this.base0(u)*p0[0] + this.base1(u)*p1[0] + this.base2(u)*p2[0] + this.base3(u)*p3[0];
         let y = this.base0(u)*p0[1] + this.base1(u)*p1[1] + this.base2(u)*p2[1] + this.base3(u)*p3[1];
+        let z = this.base0(u)*p0[2] + this.base1(u)*p1[2] + this.base2(u)*p2[2] + this.base3(u)*p3[2];
 
-		return [x, y];
+		return [x, y, z];
 	}
 
     getVertices(puntosDeControl) {
@@ -65,15 +66,16 @@ class CabezalBCubica extends Cabezal {
 		
 		let x = this.base0der(u)*p0[0] + this.base1der(u)*p1[0] + this.base2der(u)*p2[0] + this.base3der(u)*p3[0];
         let y = this.base0der(u)*p0[1] + this.base1der(u)*p1[1] + this.base2der(u)*p2[1] + this.base3der(u)*p3[1];
+        let z = this.base0der(u)*p0[2] + this.base1der(u)*p1[2] + this.base2der(u)*p2[2] + this.base3der(u)*p3[2];
 
-		return [x, y];
+		return [x, y, z];
 	}
 
     getNormales(puntosDeControl) {
         let puntos = [];
 		for (var u=0; u <= 1.0; u += this.step){
-            let der = this.tangente(u, puntosDeControl);
-            let normal = this.pcruz([der[0], 0, der[1]], [0, 1, 0]);
+            let tangente = this.tangente(u, puntosDeControl);
+            let normal = this.pcruz(tangente, this.binormal);
  			puntos.push(this.normalize(normal));
         }
         return puntos;
@@ -82,8 +84,7 @@ class CabezalBCubica extends Cabezal {
     getTangentes(puntosDeControl) {
         let puntos = [];
 		for (var u=0; u <= 1.0; u += this.step){
-            let tangente2D = this.tangente(u, puntosDeControl);
-            let tangente = [tangente2D[0], 0, tangente2D[1]];
+            let tangente = this.tangente(u, puntosDeControl);
             puntos.push(this.normalize(tangente));
          }
         return puntos;

@@ -36,16 +36,16 @@ class Trayectoria {
         return Math.round(v*(l - 1));
      }
 
-    getPosicion(pos2D, v) {
-        let vector = [pos2D[0], 0, pos2D[1], 1];
+    getPosicion(pos, v) {
+        let vector = [...pos, 1];
         let i = this.getIndiceMatriz(v);
         let matriz = this.matrices[i];
         glMatrix.vec4.transformMat4(vector, vector, matriz);
         return vector;
     }
 
-    getNormal(normal2D, v) {
-        let vector = [normal2D[0], 0, normal2D[2], 1];
+    getNormal(normal, v) {
+        let vector = [...normal, 1];
         let i = this.getIndiceMatriz(v);
         let matriz = glMatrix.mat4.clone(this.matrices[i]);
         matriz[12] = 0;
@@ -55,8 +55,8 @@ class Trayectoria {
         return this.normalize(vector);
     }
 
-    getTangente(tangente2D, v) {
-        let vector = [tangente2D[0], 0, tangente2D[2], 1];
+    getTangente(tangente, v) {
+        let vector = [...tangente, 1];
         let i = this.getIndiceMatriz(v);
         let matriz = glMatrix.mat4.clone(this.matrices[i]);
         matriz[12] = 0;
@@ -66,8 +66,8 @@ class Trayectoria {
         return this.normalize(vector);
     }
 
-    getCentro(pos2D, v) {
-        let vector = [pos2D[0], 0, pos2D[1], 1];
+    getCentro(pos, v) {
+        let vector = [...pos, 1];
         let i = this.getIndiceMatriz(v);
         let matriz = this.matrices[i];
         glMatrix.vec4.transformMat4(vector, vector, matriz);

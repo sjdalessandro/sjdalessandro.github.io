@@ -29,7 +29,6 @@
         <script type="text/javascript" src="js/extrusor.js"></script>
         <script type="text/javascript" src="js/trayectoria.js"></script>
         <script type="text/javascript" src="js/trayectoria-recta.js"></script>
-        <script type="text/javascript" src="js/trayectoria-bezier-cuadratica.js"></script>
         <script type="text/javascript" src="js/trayectoria-tobogan.js"></script>
         <script type="text/javascript" src="js/cielo.js"></script>
         <script type="text/javascript" src="js/grua.js"></script>
@@ -661,8 +660,8 @@
                 gl.clearColor(0.6, 0.8, 0.9, 1.0);     
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     
 
-                //cielo.draw();
-                //tierra.drawTierra(drawMalla, texturas.tierra0, texturas.tierra1, texturas.tierra2);
+                cielo.draw();
+                tierra.drawTierra(drawMalla, texturas.tierra0, texturas.tierra1, texturas.tierra2);
                 grua.draw(drawMalla, vista);
                 edificio.draw(drawMalla);
                 tobogan.draw(drawMalla);

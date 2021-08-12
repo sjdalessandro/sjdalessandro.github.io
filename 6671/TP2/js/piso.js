@@ -44,7 +44,7 @@ class Piso {
         for (let i = 0; i < vertices.length; i++) {
             let v = vertices[i];
             v[0] += Math.random()*(max - min) + min;
-            v[1] += Math.random()*(max - min) + min;
+            v[2] += Math.random()*(max - min) + min;
         }
     }
 
@@ -106,7 +106,7 @@ class Piso {
             let ver = this.losa.cabezal.getVertice(u);
             let normal = this.losa.cabezal.getNormal(u);
             const f = 1;
-            let pos = [ver[0] - f*normal[0], ver[1] - f*normal[2]];
+            let pos = [ver[0] - f*normal[0], ver[1], ver[2] - f*normal[2]];
             mat4.translate(modelMatrixColumna, modelMatrixA,
                     [pos[0], desplazamientoInicial, pos[1]]);
             columna.setModelMatrix(modelMatrixColumna);

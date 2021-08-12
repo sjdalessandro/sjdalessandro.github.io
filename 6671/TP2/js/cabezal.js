@@ -3,30 +3,36 @@ class Cabezal {
         this.vertices = undefined;
         this.normales = undefined;
         this.tangentes = undefined;
+        this.binormal = [0, 1, 0];
     }
 
     calcularMedidas() {
         let x = this.vertices.map(v => v[0]);
         this.minx = Math.min( ...x );
         let maxx = Math.max( ...x );
-        this.width = maxx - this.minx;
+        this.sizex = maxx - this.minx;
 
         let y = this.vertices.map(v => v[1]);
         this.miny = Math.min( ...y );
         let maxy = Math.max( ...y );
-        this.height = maxy - this.miny;
+        this.sizey = maxy - this.miny;
+
+        let z = this.vertices.map(v => v[2]);
+        this.minz = Math.min( ...z );
+        let maxz = Math.max( ...z );
+        this.sizez = maxz - this.minz;
 
         this.acc = 0;
         this.distanciasAlPrimero = [this.acc];
         for (let i = 1; i < this.vertices.length; i++) {
-            this.acc += this.distance2D(this.vertices[i], this.vertices[i-1]);
+            this.acc += this.distance(this.vertices[i], this.vertices[i-1]);
             this.distanciasAlPrimero.push(this.acc);
         }
     }
 
-    escalarATextura(pos) {
-        return [(pos[0] - this.minx) / this.width,
-                (pos[1] - this.miny) / this.height];
+    escalarATextura(uvs) {
+        return [(uvs[0] - this.minx) / this.sizex,
+                (uvs[1] - this.minz) / this.sizez];
     }
 
     getCoordenadaTextura(u) {
@@ -83,9 +89,5 @@ class Cabezal {
 
     distance(v1, v2) {
         return this.magnitude([v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2]]);
-    }
-
-    distance2D(v1, v2) {
-        return this.magnitude([v2[0]-v1[0], 0, v2[1]-v1[1]]);
     }
 }
