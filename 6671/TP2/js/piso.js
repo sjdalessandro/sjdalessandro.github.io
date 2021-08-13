@@ -27,7 +27,7 @@ class Piso {
 
         this.verticesLosa = verticesLosa;
 
-        this.losa = this.crearLosa(verticesLosa, chico);
+        this.losa = this.crearLosa(verticesLosa);
 
         this.ventanalA = new Cuboide(this.largo, this.ventanaEspesor, this.ventanaLado, true);
         this.ventanalB = new Cuboide(this.ancho, this.ventanaEspesor, this.ventanaLado, true);
@@ -72,10 +72,10 @@ class Piso {
         return marcos;
     }
 
-    crearLosa(verticesLosa, chico) {
+    crearLosa(verticesLosa) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaRepetida, this.factorRepeticionTapaLosa);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaRepetida, this.factorRepeticionTapaLosa, true);
     }
 
     actualizar(modelMatrixA) {

@@ -92,7 +92,7 @@ class Edificio {
     crearLosa(verticesLosa) {
         let cabezalLosa = new CabezalBSplineCuadratica(verticesLosa);
         let trayectoriaLosa = new TrayectoriaRecta(this.alturaLosa);
-        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaRepetida, this.factorRepeticionTapaLosa);
+        return new Extrusor(cabezalLosa, trayectoriaLosa, true, texturaRepetida, texturaRepetida, this.factorRepeticionTapaLosa, true);
     }
 
     crearPisosGrandes() {

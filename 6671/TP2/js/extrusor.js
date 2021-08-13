@@ -1,5 +1,5 @@
 class Extrusor {
-    constructor(cabezal, trayectoria, tapar, tipoTextura, tipoTexturaEnTapa, factorRepeticionTapa) {
+    constructor(cabezal, trayectoria, tapar, tipoTextura, tipoTexturaEnTapa, factorRepeticionTapa = 1, calcularTangentes = false) {
         this.modelMatrix = mat4.create();
         mat4.identity(this.modelMatrix);
         this.cabezal = cabezal;
@@ -11,6 +11,7 @@ class Extrusor {
         this.columnas = cabezal.getVerticesLength();
         this.filas = trayectoria.getMatricesLength() - 1;
         this.malla = undefined;
+        this.calcularTangentes = calcularTangentes;
         cabezal.getCentro();
         this.generarSuperficie();
     }
@@ -43,79 +44,157 @@ class Extrusor {
         return pos;
     }
 
-    agregarTapaCentro(v, n, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
-        var pos=this.getCentro(v);
+    getUVCentro(posCentro) {
 
+        let uvCentro;
+        if (this.tipoTexturaEnTapa == texturaAjustada) {
+            uvCentro = this.cabezal.escalarATextura([posCentro[0], posCentro[2]]);
+        } else {
+            uvCentro = [posCentro[0]*this.factorRepeticionTapa, posCentro[2]*this.factorRepeticionTapa];
+        }
+        return uvCentro;
+    }
+
+    agregarTapaCentro(v, n, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
+
+        var pos = this.getCentro(v);
+        let uvs = this.getUVCentro(pos);
+ 
         for (var j=0; j <= this.columnas; j++) {
 
-            var u=j/this.columnas;
+            this.push3(positionBuffer, pos);
 
-            positionBuffer.push(pos[0]);
-            positionBuffer.push(pos[1]);
-            positionBuffer.push(pos[2]);
-
-            var tan = [1, 0, 0];
-
-            tangentBuffer.push(tan[0]);
-            tangentBuffer.push(tan[1]);
-            tangentBuffer.push(tan[2]);
-
-            var nrm=[0, n, 0];
-
-            normalBuffer.push(nrm[0]);
-            normalBuffer.push(nrm[1]);
-            normalBuffer.push(nrm[2]);
-
-            var uvs;
-            if (this.tipoTexturaEnTapa == texturaAjustada) {
-                uvs = this.cabezal.escalarATextura([pos[0], pos[2]]);
-            } else {
-                uvs = [pos[0]*this.factorRepeticionTapa, pos[2]*this.factorRepeticionTapa];
+            if (!this.calcularTangentes) {
+                var tan = [1, 0, 0];
+                this.push3(tangentBuffer, tan);
             }
 
-            uvBuffer.push(uvs[0]);
-            uvBuffer.push(uvs[1]);
+            var nrm=[0, n, 0];
+            this.push3(normalBuffer, nrm);
 
+            this.push2(uvBuffer, uvs);
         }
     }
 
     agregarTapaRepetido(v, n, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
+
+        let posCentro = this.getCentro(v);
+        let uvCentro = this.getUVCentro(posCentro);
+        let tangents = []; // Tangentes de los triángulos que conforman la tapa.
+        let prevPos, prevUV;
+
         for (var j=0; j <= this.columnas; j++) {
     
             var u=j/this.columnas;
 
             var pos=this.getPosicion(u,v);
+            this.push3(positionBuffer, pos);
 
-            positionBuffer.push(pos[0]);
-            positionBuffer.push(pos[1]);
-            positionBuffer.push(pos[2]);
-
-            var tan = [1, 0, 0];
-    
-            tangentBuffer.push(tan[0]);
-            tangentBuffer.push(tan[1]);
-            tangentBuffer.push(tan[2]);
-
-            var nrm=[0, n, 0];
-
-            normalBuffer.push(nrm[0]);
-            normalBuffer.push(nrm[1]);
-            normalBuffer.push(nrm[2]);
-
-            var uvs;
-            if (this.tipoTexturaEnTapa == texturaAjustada) {
-                uvs = this.cabezal.escalarATextura([pos[0], pos[2]]);
-            } else {
-                uvs = [pos[0]*this.factorRepeticionTapa, pos[2]*this.factorRepeticionTapa];
+            if (!this.calcularTangentes) {
+                var tan = [1, 0, 0];
+                this.push3(tangentBuffer, tan);
             }
 
-            uvBuffer.push(uvs[0]);
-            uvBuffer.push(uvs[1]);
+            var nrm=[0, n, 0];
+            this.push3(normalBuffer, nrm);
 
+            var uvs = this.getUVCentro(pos);
+            this.push2(uvBuffer, uvs);
+
+            if (this.calcularTangentes) {
+                if (j > 0) {
+                    // A partir del segundo vértice, con el anterior y el centro
+                    // tengo un triángulo para el que calculo la tangente.
+                    let t = this.calcularTangente(prevPos, pos, posCentro, prevUV, uvs, uvCentro);
+                    tangents.push(t);
+                }
+                prevPos = pos;
+                prevUV = uvs;
+            }
+        }
+
+        if (this.calcularTangentes) {
+            if (v == 1) {
+                this.agregarTangentesCentro(tangentBuffer, tangents);
+                this.agregarTangentesPerimetro(tangentBuffer, tangents);
+            } else {
+                this.agregarTangentesPerimetro(tangentBuffer, tangents);
+                this.agregarTangentesCentro(tangentBuffer, tangents);
+            }
         }
     }
 
+    calcularTangente(pos1, pos2, pos3, uv1, uv2, uv3) {
+
+        if (this.esTrianguloDegenerado(pos1, pos2, pos3)) {
+            return [0, 0, 0];
+        }
+        let edge1 = vec3.create();
+        let edge2 = vec3.create();
+        vec3.sub(edge1, pos2, pos1);
+        vec3.sub(edge2, pos3, pos1);
+
+        let deltaUV1 = vec2.create();
+        let deltaUV2 = vec2.create();
+        vec2.sub(deltaUV1, uv2, uv1);
+        vec2.sub(deltaUV2, uv3, uv1);
+
+        let f = 1.0 / (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
+        let tangent = vec3.create();
+        tangent[0] = f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
+        tangent[1] = f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
+        tangent[2] = f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
+
+        return tangent;
+    }
+
+    calcularTangenteCentro(tangents) {
+
+        let avg = vec3.fromValues(0, 0, 0);
+        for (let i = 0; i < tangents.length; i++) {
+            vec3.add(avg, avg, tangents[i]);
+        }
+        vec3.normalize(avg, avg);
+        return avg;
+    }
+
+    agregarTangentesCentro(tangentBuffer, tangents) {
+
+        let avg = this.calcularTangenteCentro(tangents);
+        for (var j=0; j <= this.columnas; j++) {
+            this.push3(tangentBuffer, avg);
+        }
+    }
+
+    agregarTangentesPerimetro(tangentBuffer, tangents) {
+
+        // La tangente del primer vértice se calcula con la del primer y último triángulo.
+        let prevTangent = tangents[tangents.length - 1];
+        let lastAvgTangent;
+        for (let i = 0; i < tangents.length; i++) {
+            let tangent = tangents[i];
+            let avgTangent = vec3.create();
+            vec3.add(avgTangent, tangent, prevTangent);
+            vec3.normalize(avgTangent, avgTangent);
+            this.push3(tangentBuffer, avgTangent);
+            if(i == 0) {
+                // La tangente del último vértice es igual a la del primero.
+                lastAvgTangent = avgTangent;
+            }
+            prevTangent = tangent;
+        }
+        this.push3(tangentBuffer, lastAvgTangent);
+    }
+
+    esTrianguloDegenerado(pos1, pos2, pos3) {
+
+        return vec3.equals(pos1, pos2) ||
+               vec3.equals(pos2, pos3) ||
+               vec3.equals(pos3, pos1);
+    }
+
     agregarTapa(v, positionBuffer, normalBuffer, uvBuffer, tangentBuffer) {
+
         if (v == 1) {
             this.agregarTapaRepetido(v, 1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
             this.agregarTapaCentro(v, 1, positionBuffer, normalBuffer, uvBuffer, tangentBuffer);
@@ -143,22 +222,13 @@ class Extrusor {
                 var v=i/this.filas;
     
                 var pos=this.getPosicion(u,v);
-    
-                positionBuffer.push(pos[0]);
-                positionBuffer.push(pos[1]);
-                positionBuffer.push(pos[2]);
+                this.push3(positionBuffer, pos);
     
                 var tan=this.getTangente(u,v);
-    
-                tangentBuffer.push(tan[0]);
-                tangentBuffer.push(tan[1]);
-                tangentBuffer.push(tan[2]);
-    
+                this.push3(tangentBuffer, tan);
+
                 var nrm = this.getNormal(u,v);
-    
-                normalBuffer.push(nrm[0]);
-                normalBuffer.push(nrm[1]);
-                normalBuffer.push(nrm[2]);
+                this.push3(normalBuffer, nrm);
     
                 var uvs = [];
                 if (this.tipoTextura == texturaAjustadaXRepetidaY) {
@@ -174,10 +244,7 @@ class Extrusor {
                     let y = this.trayectoria.getCoordenadaTextura(v);
                     uvs = [x, y];
                 }
-
-                uvBuffer.push(uvs[0]);
-                uvBuffer.push(uvs[1]);
-    
+                this.push2(uvBuffer, uvs);
             }
         }
 
@@ -214,7 +281,7 @@ class Extrusor {
                 indexBuffer.push(ni);
             }
         }
-    
+
         // Creación e Inicialización de los buffers
     
         let webgl_position_buffer = gl.createBuffer();
@@ -291,5 +358,16 @@ class Extrusor {
     drawVidrio(drawMalla) {
         glPrograms.vidrio.setup(this.getModelMatrix(), glPrograms.vidrio);
         drawMalla(this.getMalla(), glPrograms.vidrio);
+    }
+
+    push3(array, e) {
+        array.push(e[0]);
+        array.push(e[1]);
+        array.push(e[2]);
+    }
+
+    push2(array, e) {
+        array.push(e[0]);
+        array.push(e[1]);
     }
 }
