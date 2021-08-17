@@ -15,7 +15,7 @@ var normalMapFragmentShader = `
         vec3 normal = normalize(vNormal);
         vec3 tangent = normalize(vTangent);
         tangent = normalize(tangent - dot(tangent, normal) * normal);
-        vec3 bitangent = cross(tangent, normal);
+        vec3 bitangent = cross(normal, tangent);
         vec3 bumpMapNormal = texture2D(normalMap, vUv).xyz;
         bumpMapNormal = 2.0 * bumpMapNormal - vec3(1.0, 1.0, 1.0);
         vec3 newNormal;

@@ -64,15 +64,15 @@ class Edificio {
             xvertices0.push([x, 0, y0]);
             xverticesf.push([x, 0, yf]);
         }
-        xverticesf.reverse();
+        xvertices0.reverse();
         let yvertices0 = [];
         let yverticesf = [];
         for (let y = y0 + stepY; y <= yf; y += stepY) {
             yvertices0.push([x0, 0, y]);
             yverticesf.push([xf, 0, y]);
         }
-        yvertices0.reverse();
-        let vertices = [...xvertices0, ...yverticesf, ...xverticesf, ...yvertices0];
+        yverticesf.reverse();
+        let vertices = [...xvertices0, ...yvertices0, ...xverticesf, ...yverticesf];
         this.desplazar(vertices, -d/2, d/2);
         return vertices;
     }

@@ -13,6 +13,6 @@ class CabezalSemiarco extends CabezalBezierCuadratica {
             [-d+e, d, 0],
             [-d+e/2, d+e, 0]
         ]);
-        this.binormal = [0, 0, -1];
+        this.binormal = [0, 0, 1];
     }
 }

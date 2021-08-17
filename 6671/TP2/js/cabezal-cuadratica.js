@@ -57,7 +57,7 @@ class CabezalCuadratica extends Cabezal {
         u = p - t;
         let pctrl = this.puntosDeControl.slice(t, t+3);
         let tangente = this.tangente(u, pctrl);
-        let normal = this.pcruz(this.binormal, tangente);
+        let normal = this.pcruz(tangente, this.binormal);
         return this.normalize(normal);
     }
 

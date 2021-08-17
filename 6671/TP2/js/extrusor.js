@@ -65,7 +65,7 @@ class Extrusor {
             this.push3(positionBuffer, pos);
 
             if (!this.calcularTangentes) {
-                var tan = [1, 0, 0];
+                var tan = [n, 0, 0];
                 this.push3(tangentBuffer, tan);
             }
 
@@ -91,7 +91,7 @@ class Extrusor {
             this.push3(positionBuffer, pos);
 
             if (!this.calcularTangentes) {
-                var tan = [1, 0, 0];
+                var tan = [n, 0, 0];
                 this.push3(tangentBuffer, tan);
             }
 
@@ -105,7 +105,7 @@ class Extrusor {
                 if (j > 0) {
                     // A partir del segundo vértice, con el anterior y el centro
                     // tengo un triángulo para el que calculo la tangente.
-                    let t = this.calcularTangente(prevPos, pos, posCentro, prevUV, uvs, uvCentro);
+                    let t = this.calcularTangente(n, prevPos, pos, posCentro, prevUV, uvs, uvCentro);
                     tangents.push(t);
                 }
                 prevPos = pos;
@@ -124,7 +124,7 @@ class Extrusor {
         }
     }
 
-    calcularTangente(pos1, pos2, pos3, uv1, uv2, uv3) {
+    calcularTangente(n, pos1, pos2, pos3, uv1, uv2, uv3) {
 
         if (this.esTrianguloDegenerado(pos1, pos2, pos3)) {
             return [0, 0, 0];
@@ -141,9 +141,9 @@ class Extrusor {
 
         let f = 1.0 / (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
         let tangent = vec3.create();
-        tangent[0] = f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
-        tangent[1] = f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
-        tangent[2] = f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
+        tangent[0] = n * f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
+        tangent[1] = n * f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
+        tangent[2] = n * f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
 
         return tangent;
     }
